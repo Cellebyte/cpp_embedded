@@ -15,7 +15,7 @@ echo 'all: $(OUTPUT) build' >> Makefile
 
 echo 'build:' >> Makefile
 for i in $(ls -d */); do echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/' >> Makefile \
-&& echo '	1. CC '"${i%%/}" >> Makefile \
+&& echo '	@echo'' 1. CC '"${i%%/}" >> Makefile \
 ; done
 
 
