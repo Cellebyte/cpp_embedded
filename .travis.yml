@@ -9,4 +9,5 @@ addons:
     packages:
       - gcc-6
       - g++-6
+      - make
 script: ./build.sh
