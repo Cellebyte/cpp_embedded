@@ -14,9 +14,8 @@ echo 'include config.mk' > Makefile
 echo 'all: $(OUTPUT) build' >> Makefile
 
 echo 'build:' >> Makefile
-for i in $(ls -d */); do echo '	PROGNAME='"${i%%/}" >> Makefile \
-&& echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/$(PROGNAME) '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/' >> Makefile \
-&& echo '	1. CC $(PROGNAME)' >> Makefile \
+for i in $(ls -d */); do echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/' >> Makefile \
+&& echo '	1. CC '"${i%%/}" >> Makefile \
 ; done
 
 
@@ -24,7 +23,7 @@ echo 'start:' >> Makefile
 echo '	$(SILENT_MKDIR)mkdir $(OUTPUT)' >> Makefile
 
 echo 'clean:' >> Makefile
-echo '	rm -f $(OUTPUT)' >> Makefile
+echo '	rm -rf $(OUTPUT)' >> Makefile
 
 make clean
 make start
