@@ -27,6 +27,7 @@
 *.exe
 *.out
 *.app
-
+bin/
+include/
 Makefile
 config.mk
