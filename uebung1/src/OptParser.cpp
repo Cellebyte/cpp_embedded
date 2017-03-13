@@ -12,7 +12,6 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
     for (int i=1; i<argc;i++)
     {
         char* argument=argv[i];
-        if(argument=='\0') return true;
         if(argument[0]!='-') return false;
         if(argument[1]=='\0') return false;
         char option=argv[i][1];
@@ -47,6 +46,14 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
                     if(! Option(option,argv[i+1])) return false;
                     i++;
                 }
+                else
+                {
+                    if(! Option(option,'\0')) return false;
+                }
+            }
+            else
+            {
+                if(! Option(option,'\0')) return false;
             }
         }
     }
@@ -54,5 +61,5 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 }
 bool CmdLineOptParser::Option(const char , const char* )
 {
-    return true;
+    return false;
 }
