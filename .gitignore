@@ -29,7 +29,6 @@
 *.app
 
 bin/
-include/
 
 Makefile
 config.mk
