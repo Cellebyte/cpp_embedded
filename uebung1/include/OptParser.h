@@ -1,3 +1,8 @@
+/*
+ *  @author Marcel Fest
+ */
+
+
 #ifndef CMD_PARSER_H
 #define CMD_PARSER_H
 
