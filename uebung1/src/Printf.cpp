@@ -15,17 +15,16 @@
  *  @param variable arg_list
  *  @return substituted Format String
  */
-
 char* Printf( char* dst, const void* end, const char* fmt, ... )
 {
     /*
-     *  1.  %d für signed int
-     *  2.  %u für unsigned int
-     *  3.  %c für ein einzelnes Zeichen
-     *  4.  %s für eine Zeichenkette
-     *  5.  %x für die Ausgabe in Hexadezimalform (0xaf)
-     *  6.  %b für die Ausgabe in Binärform (0b10101)
-     *  7.  %% für die Ausgabe des Prozentzeichens
+     *  1.  %d for signed int
+     *  2.  %u for unsigned int
+     *  3.  %c for single char
+     *  4.  %s for String
+     *  5.  %x for hex representation(0xaf)
+     *  6.  %b for binary representation (0b10101)
+     *  7.  %% for %
      *
      */
     va_list vl;                     // variable arg list initialization
@@ -33,73 +32,103 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     char temp=0;                    // define buffer character
     char* iter=dst;                 // define iterator over array;
     char* erg=0;                    // result of switch case
-    bool is_array=false;             // bool for ext copy function
     while(fmt!='\0')
     {
+        if((void*)iter>=end)
+        {
+            /*  #TODO fix Bufferoverflow.
+             * No correct solution at the moment
+             */
+
+            return '\0';
+        }
         temp=*(fmt);
 
-        if (temp!='%')
+        if (temp!='%')      //  if not a format copy char to buffer
         {
-             iter=&temp;
+             *iter=temp;
         }
         else
         {
             fmt++;
             temp=*(fmt);
-            switch(temp)
+            switch(temp)    //  else switch on format string
             {
                 case 'd':
                     {
                         int val=va_arg(vl,int);
-                        is_array=true;
+                        if (val<0)  //  check if integer is negative
+                        {
+                            *iter++='-';
+                        }
+                        while(val)  //  use modulo for convert to string
+                        {
+                            *iter++=val%10+'0';
+                            val=val/10;
+                        }
                         break;
                     }
                 case 'u':
                     {
                         unsigned int val=va_arg(vl,unsigned int);
-                        is_array=true;
+                        while(val)
+                        {
+                            *iter++=val%10+'0';
+                            val=val/10;
+                        }
                         break;
                     }
                 case 'c':
                     {
-                        char val=va_arg(vl,char);
-                        is_array=false;
-                        iter=&val;
+                        *iter++=va_arg(vl,int);
                         break;
                     }
                 case 's':
                     {
-                        char* val=va_arg(vl,char*);
-                        is_array=true;
+                        erg=va_arg(vl,char*);
+                        while(erg!='\0')
+                        {
+                            *iter++=*erg++;
+                        }
                         break;
                     }
                 case 'x':
                     {
-                        is_array=true;
+                        unsigned int val=va_arg(vl,unsigned int);
+                        *iter++='0';
+                        *iter++='x';
+                        while(val)
+                        {
+                            *iter++=val%16+'0';
+                            val=val/16;
+                        }
                         break;
                     }
 
-                case 'b':break;
+                case 'b':
+                    {
+                        unsigned int val=va_arg(vl,unsigned int);
+                        *iter++='0';
+                        *iter++='b';
+                        while(val)
+                        {
+                            *iter++=val%2+'0';
+                            val=val/2;
+                        }
+                        break;
+                    }
                 case '%':
                     {
-                        iter=&temp;
+                        *iter++=temp;
                         break;
                     }
                 default:break;
             }
         }
-        if(is_array)
-        {
-            while(erg!='\0')
-            {
-                iter=erg;
-                iter++;
-                erg++;
-            }
-        }
-        iter++;
         fmt++;
     }
+    iter='\0';
     va_end(vl);
     return dst;
 }
+
