@@ -8,6 +8,12 @@
 #include <cstdio>
 #include "Printf.h"
 /*
+ *  Defined Functions
+ */
+char* int_to_string(char*,int,int);
+char* unsigned_int_to_number_system_string(char*, unsigned int, int);
+
+/*
  *  @function Printf
  *  @param char* destination
  *  @param end of given destination array
@@ -37,7 +43,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     while(*fmt!='\0')
     {
         // DEBUG printf("%c",*fmt);
-        if(iter>=end)
+        if(iter>end)
         {
             /*  #TODO fix Bufferoverflow.
              * No correct solution at the moment
@@ -62,20 +68,13 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     if (value<0)  //  check if integer is negative
                     {
                         *iter++='-';
+                        value=value*-1;
                     }
-                    while(value)  //  use modulo for convert to string
-                    {
-                        *iter++=value%10+'0';
-                        val=val/10;
-                    }
+                    iter=int_to_string(iter,value,10);
                     break;
                 case 'u':
                     val=va_arg(vl,unsigned int);
-                    while(val)
-                    {
-                        *iter++=val%10+'0';
-                        val=val/10;
-                    }
+                    iter=unsigned_int_to_number_system_string(iter,val,10);
                     break;
                 case 'c':
                     *iter++=va_arg(vl,int);
@@ -91,21 +90,14 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     val=va_arg(vl,unsigned int);
                     *iter++='0';
                     *iter++='x';
-                    while(val)
-                    {
-                        *iter++=val%16+'0';
-                        val=val/16;
-                    }
-                     break;
+                    iter=unsigned_int_to_number_system_string(iter,val,16);
+                    break;
 
                 case 'b':
                     val=va_arg(vl,unsigned int);
                     *iter++='0';
                     *iter++='b';
-                    do{
-                        *iter++=val%2+'0';
-                        val=val/2;
-                    }while(val);
+                    iter=unsigned_int_to_number_system_string(iter,val,2);
                     break;
                 case '%':
                     *iter++=temp;
@@ -117,7 +109,26 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
         fmt++;
     }
     va_end(vl);
-    iter='\0';
+    *iter='\0';
     return dst;
 }
-
+char* int_to_string(char* buffer,int val, int type)
+{
+    char dig_its[]="0123456789";
+    char digit=dig_its[val%type];
+    printf("Type: %d, Value: %d, Value%%Type %d\n",type,val,val%type);
+    val=val/type;
+    if(val) buffer=int_to_string(buffer,val,type);
+    *buffer++=digit;
+    return buffer;
+}
+char* unsigned_int_to_number_system_string(char* buffer,unsigned int val, int type)
+{
+    char dig_its[]="0123456789abcdef";
+    printf("Type: %d, Value: %u, Value%%Type %u\n",type,val,val%type);
+    char digit=dig_its[val%type];
+    val=val/type;
+    if(val) buffer=unsigned_int_to_number_system_string(buffer,val, type);
+    *buffer++=digit;
+    return buffer;
+}
