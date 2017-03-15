@@ -5,12 +5,16 @@
  */
 
 #include <cstdarg>
-#include <cstdio>
+//#include <cstdio>
 #include "Printf.h"
 /*
  *  Defined Functions
+ *  @function unsigned_int_to_number_system_string
+ *  @param char* buffer
+ *  @param unsigned int value to be transferred
+ *  @param int give typ of number_system (hex=16, oct=8, dec=10, usw. ..)
+ *  @return char* pointer on the last free element in buffer.
  */
-char* int_to_string(char*,int,int);
 char* unsigned_int_to_number_system_string(char*, unsigned int, int);
 
 /*
@@ -31,15 +35,14 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
      *  5.  %x for hex representation(0xaf)
      *  6.  %b for binary representation (0b10101)
      *  7.  %% for %
-     *
      */
     va_list vl;                     // variable arg list initialization
     va_start(vl, fmt);              // define variable params after fmt
     char temp=0;                    // define buffer character
     char* iter=dst;                 // define iterator over array;
     char* erg=0;                    // result of switch case
-    unsigned int val=0;
-    int value=0;
+    unsigned int val=0;             // value for 2. 5. 6.
+    int value=0;                    // value for 1.
     while(*fmt!='\0')
     {
         // DEBUG printf("%c",*fmt);
@@ -64,24 +67,24 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
             switch(temp)    //  else switch on format string
             {
                 case 'd':
-                    value=va_arg(vl,int);
+                    value=va_arg(vl,int);   //get element from stack
                     if (value<0)  //  check if integer is negative
                     {
                         *iter++='-';
                         value=value*-1;
                     }
-                    iter=int_to_string(iter,value,10);
+                    iter=unsigned_int_to_number_system_string(iter,(unsigned int)value,10); // use modulo to map right string
                     break;
                 case 'u':
                     val=va_arg(vl,unsigned int);
-                    iter=unsigned_int_to_number_system_string(iter,val,10);
+                    iter=unsigned_int_to_number_system_string(iter,val,10); // use modulo to map right string
                     break;
                 case 'c':
                     *iter++=va_arg(vl,int);
                     break;
                 case 's':
                     erg=va_arg(vl,char*);
-                    while(*erg!='\0')
+                    while(*erg!='\0')       //append given string without \0
                     {
                         *iter++=*erg++;
                     }
@@ -109,26 +112,17 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
         fmt++;
     }
     va_end(vl);
-    *iter='\0';
+    *iter++='\n';   //append \n --> #TODO \r\n for Windows and \r for OSX
+    *iter='\0';     //append end of String
     return dst;
-}
-char* int_to_string(char* buffer,int val, int type)
-{
-    char dig_its[]="0123456789";
-    char digit=dig_its[val%type];
-    printf("Type: %d, Value: %d, Value%%Type %d\n",type,val,val%type);
-    val=val/type;
-    if(val) buffer=int_to_string(buffer,val,type);
-    *buffer++=digit;
-    return buffer;
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int val, int type)
 {
     char dig_its[]="0123456789abcdef";
-    printf("Type: %d, Value: %u, Value%%Type %u\n",type,val,val%type);
-    char digit=dig_its[val%type];
-    val=val/type;
-    if(val) buffer=unsigned_int_to_number_system_string(buffer,val, type);
-    *buffer++=digit;
-    return buffer;
+    // DEBUG printf("Type: %d, Value: %u, Value%%Type %u\n",type,val,val%type);
+    char digit=dig_its[val%type];       // map in right char in array with modulo function
+    val=val/type;                       // decrease value
+    if(val) buffer=unsigned_int_to_number_system_string(buffer,val, type); // recursion if value not zero
+    *buffer++=digit;    // add digit to string
+    return buffer;      // return pointer on free element in buffer
 }
