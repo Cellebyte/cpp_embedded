@@ -8,7 +8,7 @@
 /*  @function Parse
  *  @param argument counter [argc] (length of argument array)
  *  @param argument vector [argv] (argument array except the program name)
- *  @return boolean
+ *  @return boolean (true|false) true if successfull
  */
 
 bool CmdLineOptParser::Parse(int argc, char* argv[])
@@ -30,26 +30,29 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         // check if variant 2. or 3. are given
         if(argument[2]!='\0')
         {
-            int j;
+            // counter variable of the given while loop in line 49
+            int hop;
             int begin;
             // check for variant 3 with '='
             if(argument[2]=='=')
             {
-                j=3;
+                hop=3;
                 begin=3;
             }
+            // now it is variant without the '='
             else
             {
-		j=2;
+		        hop=2;
                 begin=2;
             }
             //move given string to the right Memory Addresses
-            while(argument[j]!='\0')
+            while(argument[hop]!='\0')
             {
-                argument[j-begin]=argument[j];
-                j++;
+                // copy string from offset of 3 or 2 to the front
+                argument[hop-begin]=argument[hop];
+                hop++;
             }
-            argument[j-begin]='\0';
+            argument[hop-begin]='\0';
             /*  end the String with \0
              *  Check if The given Option and Argument is right
              */
@@ -58,23 +61,31 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         else
         //check for variant 1. or 4.
         {
-            //lookahead
+            /*  lookahead for the next String in the given argument vector
+             *  i is the Counter Variable from above
+             */
             if(argv[i+1])
             {
+                // Variant 4 option and string are divided by a space
                 if(argv[i+1][0]!='-')
                 {
                     if(! Option(option,argv[++i])) return false;
                 }
             }
+            // no lookahead --> their is no string for the argument so only check the option
             else
             {
                 if(! Option(option,'\0')) return false;
             }
         }
     }
+    // when the while loop parse everything
     return true;
 }
+
+// @Override
 bool CmdLineOptParser::Option(const char , const char* )
 {
+
     return true;
 }
