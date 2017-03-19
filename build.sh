@@ -25,5 +25,5 @@ make clean
 make start
 make build
 
-for i in $(ls bin/); do ./$i; done
+for i in $(ls bin/); do ./bin/$i; done
 
