@@ -4,6 +4,7 @@
  */
 
 #include "OptParser.h"
+#include <ctype.h>
 
 /*  @function Parse
  *  @param argument counter [argc] (length of argument array)
@@ -18,7 +19,7 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         //parse if an option exist and store this option in an temporary variable
         char* argument=argv[i];
         if(argument[0]!='-') return false;
-        if(argument[1]=='\0') return false;
+        if(argument[1]=='\0'|| !isalpha(argument[1])) return false;
         char option=argument[1];
         /*  Parse different types of arguments
          *  x stands for an option
