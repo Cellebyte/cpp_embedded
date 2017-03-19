@@ -55,7 +55,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
             return '\0';
         }
         temp=*fmt;
-        if (temp!='%')      //  if not a format copy char to buffer
+        if (temp!='%')      //  if not a format string copy char to destination array
         {
             *iter++=temp;
         }
@@ -64,10 +64,11 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
             fmt++;
             temp=*fmt;
             // DEBUG printf("%c",*fmt);
-            switch(temp)    //  else switch on format string
+            switch(temp)    // goto right format and add its formatted string to destination
             {
+                //  signed Integer
                 case 'd':
-                    value=va_arg(vl,int);   //get element from stack
+                    value=va_arg(vl,int);   //  get element from stack
                     if (value<0)  //  check if integer is negative
                     {
                         *iter++='-';
@@ -75,46 +76,52 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     }
                     iter=unsigned_int_to_number_system_string(iter,(unsigned int)value,10); // use modulo to map right string
                     break;
+                //  unsigned Integer
                 case 'u':
                     val=va_arg(vl,unsigned int);
                     iter=unsigned_int_to_number_system_string(iter,val,10); // use modulo to map right string
                     break;
+                //  character
                 case 'c':
                     *iter++=va_arg(vl,int);
                     break;
+                //  String --> char Array
                 case 's':
                     erg=va_arg(vl,char*);
-                    while(*erg!='\0')       //append given string without \0
+                    while(*erg!='\0')       //append given string without \0 to destination array
                     {
                         *iter++=*erg++;
                     }
                     break;
+                //  unsigned Integer to hex presentation
                 case 'x':
                     val=va_arg(vl,unsigned int);
                     *iter++='0';
                     *iter++='x';
                     iter=unsigned_int_to_number_system_string(iter,val,16);
                     break;
-
+                //  unsigned Integer to byte presentation
                 case 'b':
                     val=va_arg(vl,unsigned int);
                     *iter++='0';
                     *iter++='b';
                     iter=unsigned_int_to_number_system_string(iter,val,2);
                     break;
+                //  append a simple % to the String
                 case '%':
                     *iter++=temp;
                     break;
+                //  if not defined return an empty destination
                 default:
                     return '\0';
             }
         }
-        fmt++;
+        fmt++; //   go to next format character
     }
-    va_end(vl);
-    *iter++='\n';   //append \n --> #TODO \r\n for Windows and \r for OSX
-    *iter='\0';     //append end of String
-    return dst;
+    va_end(vl);     //  close the variable parameters
+    *iter++='\n';   //  append \n --> #TODO \r\n for Windows and \r for OSX
+    *iter='\0';     //  append end of String
+    return dst;     //  return the created String
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int val, int type)
 {
