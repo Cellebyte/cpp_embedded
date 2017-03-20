@@ -16,6 +16,7 @@
  *  @return char* pointer on the last free element in buffer.
  */
 char* unsigned_int_to_number_system_string(char*, unsigned int, int);
+static const char dig_its[]="0123456789abcdef";
 
 /*
  *  @function Printf
@@ -43,17 +44,9 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     char* erg=0;                    // result of switch case
     unsigned int val=0;             // value for 2. 5. 6.
     int value=0;                    // value for 1.
-    while(*fmt!='\0')
+    while(*fmt!='\0' && iter<end) // - two for \n and \0 at the end of the loop
     {
-        // DEBUG printf("%c",*fmt);
-        if(iter>end)
-        {
-            /*  #TODO fix Bufferoverflow.
-             * No correct solution at the moment
-             */
-
-            return '\0';
-        }
+        // #TODO Fix Bufferoverflow!!
         temp=*fmt;
         if (temp!='%')      //  if not a format string copy char to destination array
         {
@@ -125,8 +118,6 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int val, int type)
 {
-    char dig_its[]="0123456789abcdef";
-    // DEBUG printf("Type: %d, Value: %u, Value%%Type %u\n",type,val,val%type);
     char digit=dig_its[val%type];       // map in right char in array with modulo function
     val=val/type;                       // decrease value
     if(val) buffer=unsigned_int_to_number_system_string(buffer,val, type); // recursion if value not zero
