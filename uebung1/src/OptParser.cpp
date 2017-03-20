@@ -32,8 +32,8 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         if(argument[2]!='\0')
         {
             // counter variable of the given while loop in line 49
-            int hop;
-            int begin;
+            int hop=0;
+            int begin=0;
             // check for variant 3 with '='
             if(argument[2]=='=')
             {
@@ -70,7 +70,7 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
                 // Variant 4 option and string are divided by a space
                 if(argv[i+1][0]!='-') //    if not an option Check for option argument
                 {
-                    argument=argv[++i];
+                    argument=argv[++i]; // increase i for the next option
                     if(! Option(option,argument)) return false;
                 }
                 else
