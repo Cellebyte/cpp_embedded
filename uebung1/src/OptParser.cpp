@@ -15,7 +15,7 @@
 
 bool CmdLineOptParser::Parse(int argc, char* argv[])
 {
-    for (int i=0; i<argc; i++)
+    for (int i=1; i<argc; i++)
     {
         //parse if an option exist and store this option in an temporary variable
         char* argument=argv[i];

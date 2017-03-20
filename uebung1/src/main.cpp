@@ -9,5 +9,5 @@
 int main(int argc, char* argv[])
 {
     CmdLineOptParser cmd;
-    if (!cmd.Parse(--argc,++argv)) return 1;
+    if (!cmd.Parse(argc,argv)) return 1;
 }
