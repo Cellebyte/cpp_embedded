@@ -53,11 +53,10 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     va_list vl;                         // variable arg list initialization
     va_start(vl, fmt);                  // define variable params after fmt
     char NULL(temp);                    // define buffer character
-    char* iter=dst;                     // define iterator over array
     char* NULL(erg);                    // result of switch case
     unsigned int NULL(val);             // value for 2. 5. 6.
     int NULL(value);                    // value for 1.
-
+    char* iter=dst;                     // define an iterator over the array
     while(END_OF_STRING != *fmt && iter < end) // - two for \n and \0 at the end of the loop
     {
         // #TODO Fix Bufferoverflow!!
