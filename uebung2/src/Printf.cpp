@@ -116,7 +116,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     return '\0';
             }
         }
-        fmt++; //   go to next format character
+        fmt++; //   go to next format string character
     }
     va_end(vl);     //  close the variable parameters
     *iter++='\n';   //  append \n --> #TODO \r\n for Windows and \r for OSX
