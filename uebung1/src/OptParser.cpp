@@ -5,6 +5,7 @@
 
 #include "OptParser.h"
 #include <ctype.h>
+#include <stdio.h>
 
 /*  @function Parse
  *  @param argument counter [argc] (length of argument array)
@@ -68,9 +69,14 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
             if(argv[i+1])
             {
                 // Variant 4 option and string are divided by a space
-                if(argv[i+1][0]!='-')
+                if(argv[i+1][0]!='-') //    if not an option Check for option argument
                 {
-                    if(! Option(option,argv[++i])) return false;
+                    argument=argv[++i];
+                    if(! Option(option,argument)) return false;
+                }
+                else
+                {
+                    if(! Option(option,'\0')) return false;
                 }
             }
             // no lookahead --> their is no string for the argument so only check the option
@@ -85,8 +91,9 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 }
 
 // @Override
-bool CmdLineOptParser::Option(const char , const char* )
+bool CmdLineOptParser::Option(const char option, const char* argument )
 {
+    printf("%c --> with %s\n",option,argument);
 
     return true;
 }
