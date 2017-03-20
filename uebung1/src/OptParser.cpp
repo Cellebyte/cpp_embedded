@@ -90,7 +90,7 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 }
 
 // @Override
-bool CmdLineOptParser::Option(const char option, const char* argument )
+bool CmdLineOptParser::Option(const char, const char*)
 {
     return true;
 }
