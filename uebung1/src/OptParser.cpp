@@ -5,7 +5,6 @@
 
 #include "OptParser.h"
 #include <ctype.h>
-#include <stdio.h>
 
 /*  @function Parse
  *  @param argument counter [argc] (length of argument array)
@@ -93,7 +92,5 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 // @Override
 bool CmdLineOptParser::Option(const char option, const char* argument )
 {
-    printf("%c --> with %s\n",option,argument);
-
     return true;
 }
