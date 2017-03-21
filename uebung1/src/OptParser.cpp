@@ -4,10 +4,11 @@
  */
 
 #include "OptParser.h"
-#include <ctype.h>
 
 #define END_OF_STRING '\0'
 #define FLAG '-'
+
+#define NULL(x) x=0
 
 /*  @function Parse
  *  @param argument counter [argc] (length of argument array)
@@ -17,13 +18,22 @@
 
 bool CmdLineOptParser::Parse(int argc, char* argv[])
 {
+    char* NULL(argument);
+    char NULL(option);
+
+    /*
+     *  Only for move of String at line 45
+     */
+    int NULL(hop);
+    int NULL(begin);
+
     for (int i=1; i<argc; i++)
     {
         //parse if an option exist and store this option in an temporary variable
-        char* argument = argv[i];
+        argument = argv[i];
         if(FLAG != argument[0]) return false;
-        if(END_OF_STRING == argument[1] || ! isalpha(argument[1])) return false;
-        char option = argument[1];
+        if(END_OF_STRING == argument[1]) return false;
+        option = argument[1];
         /*  Parse different types of arguments
          *  x stands for an option
          *  1. -x
@@ -35,8 +45,8 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         if(END_OF_STRING != argument[2])
         {
             // counter variable of the given while loop in line 49
-            int hop=0;
-            int begin=0;
+            NULL(hop);
+            NULL(begin);
             // check for variant 3 with '='
             if('=' == argument[2])
             {
