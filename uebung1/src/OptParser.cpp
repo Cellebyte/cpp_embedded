@@ -4,11 +4,12 @@
  */
 
 #include "OptParser.h"
+#include <cstdio>
 
 #define END_OF_STRING '\0'
 #define FLAG '-'
 
-#define NULL(x) x=0
+#define NULLING(x) x=0
 
 /*  @function Parse
  *  @param argument counter [argc] (length of argument array)
@@ -18,8 +19,8 @@
 
 bool CmdLineOptParser::Parse(int argc, char* argv[])
 {
-    char* NULL(argument);
-    char NULL(option);
+    char* NULLING(argument);
+    char NULLING(option);
 
     for (int i=1; i<argc; i++)
     {
@@ -82,7 +83,8 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 }
 
 // @Override
-bool CmdLineOptParser::Option(const char, const char*)
+bool CmdLineOptParser::Option(const char option, const char* info)
 {
+    printf("%c --> %s\n",option,info);
     return true;
 }
