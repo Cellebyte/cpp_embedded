@@ -5,7 +5,6 @@
 
 #include "OptParser.h"
 #include <cstdio>
-
 #define END_OF_STRING '\0'
 #define FLAG '-'
 
@@ -21,8 +20,13 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 {
     char* NULLING(argument);
     char NULLING(option);
+    int NULLING(i);
+    if (FLAG != argv[0][0])
+    {
+        i=1;
+    }
 
-    for (int i=1; i<argc; i++)
+    for (; i<argc; i++)
     {
         //parse if an option exist and store this option in an temporary variable
         argument = argv[i];
@@ -54,10 +58,6 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         else
         // check if variant 1. or 4.
         {
-            /*  lookahead for the next String in the given argument vector
-             *  i is the Counter Variable from above
-             */
-
             if(argv[i+1])
             {
                 // Variant 4 option and string are divided by a space
@@ -85,6 +85,5 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
 // @Override
 bool CmdLineOptParser::Option(const char option, const char* info)
 {
-    printf("%c --> %s\n",option,info);
     return true;
 }
