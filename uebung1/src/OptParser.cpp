@@ -4,7 +4,7 @@
  */
 
 #include "OptParser.h"
-#include <cstdio>
+
 #define END_OF_STRING '\0'
 #define FLAG '-'
 
