@@ -5,12 +5,10 @@
  */
 
 #include <cstdarg>
-//#include <cstdio>
 #include "Printf.h"
 
 #define END_OF_STRING       '\0'
-#define NEWLINE             '\n'
-#define NULL(x)             x=0
+#define NULLING(x)           x=0
 
 #define INTEGER             'd'
 #define CHARACTER           'c'
@@ -26,9 +24,11 @@
  *  @param char* buffer
  *  @param unsigned int value to be transferred
  *  @param int give typ of number_system (hex=16, oct=8, dec=10, usw. ..)
+ *  @param end pointer --> Fix Bufferoverflow
  *  @return char* pointer on the last free element in buffer.
  */
-char* unsigned_int_to_number_system_string(char*, unsigned int, int);
+
+char* unsigned_int_to_number_system_string(char*, unsigned int, int, const void*);
 static const char dig_its[] = "0123456789abcdef";
 
 /*
@@ -39,6 +39,7 @@ static const char dig_its[] = "0123456789abcdef";
  *  @param variable arg_list
  *  @return substituted Format String
  */
+
 char* Printf( char* dst, const void* end, const char* fmt, ... )
 {
     /*
@@ -50,27 +51,29 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
      *  6.  %b for binary representation (0b10101)
      *  7.  %% for %
      */
-    va_list vl;                         // variable arg list initialization
-    va_start(vl, fmt);                  // define variable params after fmt
-    char NULL(temp);                    // define buffer character
-    char* NULL(erg);                    // result of switch case
-    unsigned int NULL(val);             // value for 2. 5. 6.
-    int NULL(value);                    // value for 1.
-    char* iter=dst;                     // define an iterator over the array
+    int NULLING(type);          //    type of NumberString
+    char NULLING(temp);         //   define buffer character
+    char* NULLING(erg);         //   result of switch case
+    unsigned int NULLING(val);  //    value for 2. 5. 6.
+    int NULLING(value);         //   value for 1.
+
+    va_list vl;                 // variable arg list initialization
+    va_start(vl, fmt);          // define variable params after fmt
+    char* iter=dst;             // define an iterator over the array
+
     while(END_OF_STRING != *fmt && iter < end) // - two for \n and \0 at the end of the loop
     {
-        // #TODO Fix Bufferoverflow!!
         temp = *fmt;
-        if (PROCENT != temp)      //  if not a format string copy char to destination array
+        if (PROCENT != temp)    //  if not a format string copy char to destination array
         {
             *iter++ = temp;
         }
         else
         {
-            fmt++; //--> Next Character
+            NULLING(type);
+            fmt++;              //  --> Next Character
             temp = *fmt;
-            // #DEBUG printf("%c",*fmt);
-            switch(temp)    // goto right format and add its formatted string to destination
+            switch(temp)        // goto right format and add its formatted string to destination
             {
                 case INTEGER:
                     value = va_arg(vl,int);   //  get element from stack
@@ -79,60 +82,63 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                         *iter++ = '-';
                         value = value*-1;
                     }
-                    iter = unsigned_int_to_number_system_string(iter,(unsigned int)value,10); // use modulo to map right string
+                    val = static_cast<unsigned int>(value);
+                    type = 10;
                     break;
-
                 case UNSIGNED_INTEGER:
                     val = va_arg(vl,unsigned int);
-                    iter = unsigned_int_to_number_system_string(iter,val,10); // use modulo to map right string
+                    type = 10;
                     break;
-
                 case CHARACTER:
                     *iter++ = va_arg(vl,int);
                     break;
-
-                case STRING://--> Char Array
+                case STRING:        //  --> Char Array
                     erg = va_arg(vl,char*);
-                    while(END_OF_STRING != *erg)       //append given string without \0 to destination array
+                    while(END_OF_STRING != *erg && iter < end)       //append given string without \0 to destination array
                     {
                         *iter++ = *erg++;
                     }
                     break;
-
                 case HEXADECIMAL:
                     val = va_arg(vl,unsigned int);
                     *iter++ = '0';
                     *iter++ = HEXADECIMAL;
-                    iter = unsigned_int_to_number_system_string(iter,val,16);
+                    type = 16;
                     break;
 
                 case BINARY:
                     val=va_arg(vl,unsigned int);
                     *iter++ = '0';
                     *iter++ = BINARY;
-                    iter = unsigned_int_to_number_system_string(iter,val,2);
+                    type = 2;
                     break;
 
                 case PROCENT:
                     *iter++ = temp;
                     break;
-                //  if not defined return an empty destination
-                default:
+                default:            // if not defined return empty String
                     return END_OF_STRING;
             }
+            if(0 != type)
+            {
+                unsigned_int_to_number_system_string(iter,val,type,end);
+            }
         }
-        fmt++; // --> next character
+        fmt++;      //   --> next character
     }
     va_end(vl);     //  close the variable parameters
-    *iter++ = NEWLINE;   //  append \n --> #TODO \r\n for Windows and \r for OSX
     *iter = END_OF_STRING;     //  append end of String
     return dst;     //  return the created String
 }
-char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type)
+char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type, const void* end)
 {
     char digit = dig_its[value%type];       // map right char in array with modulo function
     value = value/type;                     // decrease value divided by type
-    if(value) buffer = unsigned_int_to_number_system_string(buffer,value, type); // recursion if value not zero
+    if (value) buffer = unsigned_int_to_number_system_string(buffer,value, type, end); // recursion if value not zero
+    if (buffer < end)
+    {
     *buffer++ = digit;    // add digit to string
     return buffer;      // return pointer on free element after last element
+    }
+    else return END_OF_STRING; // #FIX BUFFEROVERFLOW
 }
