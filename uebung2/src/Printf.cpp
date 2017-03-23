@@ -61,7 +61,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     va_start(vl, fmt);          // define variable params after fmt
     char* iter=dst;             // define an iterator over the array
 
-    while(END_OF_STRING != *fmt && iter < end) // - two for \n and \0 at the end of the loop
+    while(END_OF_STRING != *fmt && iter < end)
     {
         temp = *fmt;
         if (PROCENT != temp)    //  if not a format string copy char to destination array
