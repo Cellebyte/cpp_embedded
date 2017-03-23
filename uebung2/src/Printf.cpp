@@ -5,11 +5,9 @@
  */
 
 #include <cstdarg>
-//#include <cstdio>
 #include "Printf.h"
 
 #define END_OF_STRING       '\0'
-#define NEWLINE             '\n'
 #define NULLING(x)           x=0
 
 #define INTEGER             'd'
@@ -26,8 +24,10 @@
  *  @param char* buffer
  *  @param unsigned int value to be transferred
  *  @param int give typ of number_system (hex=16, oct=8, dec=10, usw. ..)
+ *  @param end pointer --> Fix Bufferoverflow
  *  @return char* pointer on the last free element in buffer.
  */
+
 char* unsigned_int_to_number_system_string(char*, unsigned int, int, const void*);
 static const char dig_its[] = "0123456789abcdef";
 
@@ -39,6 +39,7 @@ static const char dig_its[] = "0123456789abcdef";
  *  @param variable arg_list
  *  @return substituted Format String
  */
+
 char* Printf( char* dst, const void* end, const char* fmt, ... )
 {
     /*
@@ -50,29 +51,29 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
      *  6.  %b for binary representation (0b10101)
      *  7.  %% for %
      */
-    va_list vl;                         // variable arg list initialization
-    va_start(vl, fmt);                  // define variable params after fmt
-    char NULLING(temp);                    // define buffer character
-    char* NULLING(erg);                    // result of switch case
-    unsigned int NULLING(val);             // value for 2. 5. 6.
-    int NULLING(value);                    // value for 1.
-    char* iter=dst;                     // define an iterator over the array
-    int NULLING(type);
+    int NULLING(type);          //    type of NumberString
+    char NULLING(temp);         //   define buffer character
+    char* NULLING(erg);         //   result of switch case
+    unsigned int NULLING(val);  //    value for 2. 5. 6.
+    int NULLING(value);         //   value for 1.
+
+    va_list vl;                 // variable arg list initialization
+    va_start(vl, fmt);          // define variable params after fmt
+    char* iter=dst;             // define an iterator over the array
+
     while(END_OF_STRING != *fmt && iter < end) // - two for \n and \0 at the end of the loop
     {
-        // #TODO Fix Bufferoverflow!!
         temp = *fmt;
-        if (PROCENT != temp)      //  if not a format string copy char to destination array
+        if (PROCENT != temp)    //  if not a format string copy char to destination array
         {
             *iter++ = temp;
         }
         else
         {
-            fmt++; //--> Next Character
-            temp = *fmt;
-            // #DEBUG printf("%c",*fmt);
             NULLING(type);
-            switch(temp)    // goto right format and add its formatted string to destination
+            fmt++;              //  --> Next Character
+            temp = *fmt;
+            switch(temp)        // goto right format and add its formatted string to destination
             {
                 case INTEGER:
                     value = va_arg(vl,int);   //  get element from stack
@@ -91,7 +92,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                 case CHARACTER:
                     *iter++ = va_arg(vl,int);
                     break;
-                case STRING://--> Char Array
+                case STRING:        //  --> Char Array
                     erg = va_arg(vl,char*);
                     while(END_OF_STRING != *erg && iter < end)       //append given string without \0 to destination array
                     {
@@ -115,8 +116,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                 case PROCENT:
                     *iter++ = temp;
                     break;
-                //  if not defined return an empty string;
-                default:
+                default:            // if not defined return empty String
                     return END_OF_STRING;
             }
             if(0 != type)
@@ -124,7 +124,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                 unsigned_int_to_number_system_string(iter,val,type,end);
             }
         }
-        fmt++; // --> next character
+        fmt++;      //   --> next character
     }
     va_end(vl);     //  close the variable parameters
     *iter = END_OF_STRING;     //  append end of String
