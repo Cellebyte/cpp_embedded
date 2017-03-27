@@ -18,7 +18,7 @@
 
 bool CmdLineOptParser::Parse(int argc, char* argv[])
 {
-    char* NULLING(argument);
+    char* argument = nullptr;
     char NULLING(option);
     int NULLING(i);
     if (FLAG != argv[0][0])
