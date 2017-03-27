@@ -135,7 +135,7 @@ char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int 
     char digit = dig_its[value%type];       // map right char in array with modulo function
     value = value/type;                     // decrease value divided by type
     if (value) buffer = unsigned_int_to_number_system_string(buffer,value, type, end); // recursion if value not zero
-    if (buffer < end)
+    if (buffer > end)
     {
     *buffer++ = digit;    // add digit to string
     return buffer;      // return pointer on free element after last element
