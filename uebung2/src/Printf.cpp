@@ -6,6 +6,7 @@
 
 #include <cstdarg>
 #include "Printf.h"
+#include <cstdio>
 
 #define END_OF_STRING       '\0'
 #define NULLING(x)           x=0
@@ -28,7 +29,7 @@
  *  @return char* pointer on the last free element in buffer.
  */
 
-char* unsigned_int_to_number_system_string(char*, unsigned int, int, const void*);
+char* unsigned_int_to_number_system_string(char*, unsigned int, int);
 static const char dig_its[] = "0123456789abcdef";
 
 /*
@@ -84,10 +85,12 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     }
                     val = static_cast<unsigned int>(value);
                     type = 10;
+                    unsigned_int_to_number_system_string(iter,val,type);
                     break;
                 case UNSIGNED_INTEGER:
                     val = va_arg(vl,unsigned int);
                     type = 10;
+                    unsigned_int_to_number_system_string(iter,val,type);
                     break;
                 case CHARACTER:
                     *iter++ = va_arg(vl,int);
@@ -104,6 +107,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     *iter++ = '0';
                     *iter++ = HEXADECIMAL;
                     type = 16;
+                    unsigned_int_to_number_system_string(iter,val,type);
                     break;
 
                 case BINARY:
@@ -111,6 +115,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     *iter++ = '0';
                     *iter++ = BINARY;
                     type = 2;
+                    uunsigned_int_to_number_system_string(iter,val,type);
                     break;
 
                 case PROCENT:
@@ -119,10 +124,6 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                 default:            // if not defined return empty String
                     return END_OF_STRING;
             }
-            if(0 != type)
-            {
-                unsigned_int_to_number_system_string(iter,val,type,end);
-            }
         }
         fmt++;      //   --> next character
     }
@@ -130,15 +131,12 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     *iter = END_OF_STRING;     //  append end of String
     return dst;     //  return the created String
 }
-char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type, const void* end)
+char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type)
 {
     char digit = dig_its[value%type];       // map right char in array with modulo function
     value = value/type;                     // decrease value divided by type
-    if (value) buffer = unsigned_int_to_number_system_string(buffer,value, type, end); // recursion if value not zero
-    if (buffer > end)
-    {
+    if (value) buffer = unsigned_int_to_number_system_string(buffer,value, type); // recursion if value not zero
     *buffer++ = digit;    // add digit to string
-    return buffer;      // return pointer on free element after last element
-    }
-    else return END_OF_STRING; // #FIX BUFFEROVERFLOW
+    printf("%c\n",digit);
+    return buffer;        // return pointer on last empty array field
 }
