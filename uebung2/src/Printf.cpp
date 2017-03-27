@@ -6,7 +6,6 @@
 
 #include <cstdarg>
 #include "Printf.h"
-#include <cstdio>
 
 #define END_OF_STRING       '\0'
 #define NULLING(x)           x=0
@@ -52,10 +51,10 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
      *  6.  %b for binary representation (0b10101)
      *  7.  %% for %
      */
-    int NULLING(type);          //    type of NumberString
+    int NULLING(type);          //   type of NumberString
     char NULLING(temp);         //   define buffer character
     char* NULLING(erg);         //   result of switch case
-    unsigned int NULLING(val);  //    value for 2. 5. 6.
+    unsigned int NULLING(val);  //   value for 2. 5. 6.
     int NULLING(value);         //   value for 1.
 
     va_list vl;                 // variable arg list initialization
@@ -139,7 +138,6 @@ char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int 
     if (buffer < end)
     {
         *buffer++ = digit;    // add digit to string
-        printf("%c\n",digit);
         return buffer;        // return pointer on last empty array field
     }
     else
