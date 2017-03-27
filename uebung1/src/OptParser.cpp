@@ -58,12 +58,13 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
         else
         // check if variant 1. or 4.
         {
+            //  lookahead
             if(argv[i+1])
             {
                 // Variant 4 option and string are divided by a space
-                if(FLAG != argv[i+1][0]) //    if not an option Check use as argument an
+                if(FLAG != argv[i+1][0])
                 {
-                    argument = argv[++i]; // increase i for the next option
+                    argument = argv[++i];
                 }
                 else
                 {
