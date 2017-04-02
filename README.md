@@ -1,5 +1,7 @@
-# cpp_embedded
-Studies on Embedded Systems with Cpp
+cpp_embedded
+============
+
+Studies on Embedded Systems with C++
 
 Build Status of Master:
 -----------------------
