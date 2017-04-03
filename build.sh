@@ -32,6 +32,6 @@ make build
 for i in $(ls bin/); do ./bin/$i; done
 
 ASDF=$?
-echo $(ASDF)
-return $(ASDF)
+echo ${ASDF}
+return ${ASDF}
 
