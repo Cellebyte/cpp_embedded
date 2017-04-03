@@ -29,7 +29,7 @@
  */
 
 char* unsigned_int_to_number_system_string(char*, unsigned int, int, const void*);
-static const char dig_its[] = "0123456789abcdef";
+static const char digits[] = "0123456789abcdef";
 
 /*
  *  @function Printf
@@ -132,7 +132,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type, const void* end)
 {
-    char digit = dig_its[value%type];       // map right char in array with modulo function
+    char digit = digits[value%type];       // map right char in array with modulo function
     value = value/type;                     // decrease value divided by type
     if (value) buffer = unsigned_int_to_number_system_string(buffer,value, type, end); // recursion if value not zero
     if (buffer < end)
