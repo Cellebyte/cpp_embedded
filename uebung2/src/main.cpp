@@ -12,6 +12,10 @@
     char* result=Printf(a+0,a+999,"%x, %d, %d, %s, %c, %b, %u, %% ",test,-12345,12345,"Hallo",'a',test,test);
     printf("%s\n",result);
 }*/
+/*
+ *  @author XOSplicer alias Felix Stegmaier
+ *  --> Test Environment
+ */
 int main() {
     char buffer[256] = {0};
     char small_buffer[32];
