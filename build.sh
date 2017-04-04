@@ -31,7 +31,12 @@ make build
 
 for i in $(ls bin/); do ./bin/$i; done
 
-ASDF=$?
-echo ${ASDF}
-return ${ASDF}
+if [ $? -eq 0 ]
+then
+    echo "Successfully build and tested!"
+    exit 0
+else
+    echo "Error in build or test!!" >&2
+    exit 1
+fi
 
