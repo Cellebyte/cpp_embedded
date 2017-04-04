@@ -51,7 +51,7 @@ COUNTER=1
 
 for i in $(ls bin/); do echo "$COUNTER. Test" && \
 ./bin/$i && \
-echo '\n' && \
+echo '' && \
 (( COUNTER++ )) \
 ; done
 
