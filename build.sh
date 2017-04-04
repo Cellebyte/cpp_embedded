@@ -52,7 +52,7 @@ COUNTER=1
 for i in $(ls bin/); do echo "$COUNTER. Test" && \
 ./bin/$i && \
 echo '\n' && \
-&& (( COUNTER++ )) \
+(( COUNTER++ )) \
 ; done
 
 if [ $? -eq 0 ]
