@@ -19,23 +19,26 @@
 int main() {
     char buffer[256] = {0};
     char small_buffer[32];
+    int count=0;
     int ret = Printf(
             buffer,
             buffer+256,
             "verbatim text %d, %u, %c, %s, %x, %b, %%",
             -4316, 2958, '&', "some string", 0xdeadbeef, 0xdeadbeef
             )? 0 : 1;
-    printf("%s",buffer);
+    printf("Test %d --> Status Code %d \t %s\n",++count,ret,buffer);
     ret |= Printf(
             small_buffer, small_buffer+32,
             "%%d%%%d",
             -123
             )? 0 : 1;
+    printf("Test %d --> Status Code %d \t %s\n",++count,ret,small_buffer);
     ret |= Printf(
             small_buffer, small_buffer+32,
             "%s",
             "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            )? 1 : 0;
+            )? 0 : 1;
+    printf("Test %d --> Status Code %d \t %s\n",++count,ret,small_buffer);
     return ret;
 }
 
