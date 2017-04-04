@@ -3,6 +3,11 @@
 touch Makefile
 touch config.mk
 
+if [ -d ./bin ]
+    then
+        rm -rf ./bin
+fi
+
 COUNTER=1
 
 echo 'CXX=g++-6' > config.mk
@@ -22,10 +27,7 @@ for i in $(ls -d */); do echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"$
 
 echo 'start:' >> Makefile
 echo '	$(SILENT_MKDIR)mkdir $(OUTPUT)' >> Makefile
-echo 'clean:' >> Makefile
-echo '	rm -rf $(OUTPUT)' >> Makefile
 
-make clean
 make start
 make build
 
