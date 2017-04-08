@@ -1,24 +1,44 @@
-#define CREATE(varName, size)
+#ifndef PREALLOCSTRING_H
+#define PREALLOCSTRING_H
+#define CREATE(varName,size) PreAllocString<size> varName;
 
-operator const char *() const;
-operator const void *() const;
-const char & operator [] ( const int idx );
+#include <cstdarg>
+#include "Printf.h"
 
-/*  Current number of characters in string */
-size_t GetLength () const;
 
-/*  Maximum number of characters possible */
-constexpr size_t SizeOf ();
+template <size_t MAX_LENGTH>
+class PreAllocString
+{
+    public:
+        /*  Current number of characters in string */
+        size_t GetLength() const
+        {
+            return used_length;
+        }
 
-/*  Empty the string , set length field to zero */
-void Empty () ;
+        /*  Maximum number of characters possible */
+        constexpr size_t SizeOf()
+        {
+            return max_length;
+        }
+        void Empty();
+        {
+            used_length=0;
+        }
+        void AddFormat(const char* format, ...)
+        {
 
-PreAllocString& operator =(char rhs);
-PreAllocString& operator =(const char* rhs);
-PreAllocString& operator =(char* const rhs);
+        }
+        void AddWhiteSpace()
+        {
 
-PreAllocString& operator +=(char rhs);
-PreAllocString& operator +=(char* const rhs);
+        }
 
-void AddFormat (const char * format , ... );
-void AddWhiteSpace ();
+    private:
+        size_t used_length;
+        const size_t max_length = MAX_LENGTH;
+        char string_storage[MAX_LENGTH];
+
+}
+
+#endif
