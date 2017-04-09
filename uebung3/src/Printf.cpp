@@ -122,9 +122,8 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
         }
         fmt++;      //   --> next character
     }
-    va_end(vl);     //  close the variable parameters
     *iter = END_OF_STRING;     //  append end of String
-    return dst;     //  return the created String
+    return iter;     //  return the created String
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type, const void* end)
 {
