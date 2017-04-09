@@ -97,6 +97,11 @@ class PreAllocString
             AddFormat("%s", rhs);
             return *this;
         }
+        PreAllocString& operator=(const PreAllocString other)
+        {
+            *this=other;
+            return *this;
+        }
         PreAllocString& operator+=( char const* rhs)
         {
             AddFormat("%s", rhs);
