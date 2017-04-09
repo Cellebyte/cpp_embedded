@@ -3,7 +3,6 @@
  *
  *  include stdarg.h from c++ for variable parameters
  */
-
 #include "Printf.h"
 
 #define END_OF_STRING       '\0'
@@ -39,7 +38,7 @@ static const char digits[] = "0123456789abcdef";
  *  @return substituted Format String
  */
 
-char* Printf( char* dst, const void* end, const char* fmt, ... )
+char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
 {
     /*
      *  1.  %d for signed int
@@ -56,8 +55,6 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
     unsigned int NULLING(val);  //   value for 2. 5. 6.
     int NULLING(value);         //   value for 1.
 
-    va_list vl;                 // variable arg list initialization
-    va_start(vl, fmt);          // define variable params after fmt
     char* iter=dst;             // define an iterator over the array
 
     while(END_OF_STRING != *fmt && iter < end)
@@ -125,9 +122,8 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
         }
         fmt++;      //   --> next character
     }
-    va_end(vl);
     *iter = END_OF_STRING;     //  append end of String
-    return dst;     //  return the created String
+    return iter;     //  return the created String
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type, const void* end)
 {
