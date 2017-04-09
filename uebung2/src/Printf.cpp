@@ -4,7 +4,6 @@
  *  include stdarg.h from c++ for variable parameters
  */
 
-#include <cstdarg>
 #include "Printf.h"
 
 #define END_OF_STRING       '\0'
