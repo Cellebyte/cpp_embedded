@@ -1,3 +1,6 @@
+/*
+ *  @author Marcel Fest
+ */
 #ifndef PREALLOCSTRING_H
 #define PREALLOCSTRING_H
 #define CREATE(varName,size) PreAllocString<size> varName;

@@ -1,5 +1,6 @@
-//This is the main
-
+/*
+ *  @author Marcel Fest
+ */
 #include "PreAllocString.h"
 #include <cstdio>
 int main()
