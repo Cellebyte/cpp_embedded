@@ -24,14 +24,19 @@ class PreAllocString
         void Empty();
         {
             used_length=0;
+            string_storage[used_length];
         }
         void AddFormat(const char* format, ...)
         {
-
+            va_list vl;
+            va_start(vl,format);
+            Printf(string_storage[used_length],string_storage[max_length],fmt,vl);
+            va_end(vl);
         }
+
         void AddWhiteSpace()
         {
-
+          string_storage[used_length++]=' '
         }
 
     private:
