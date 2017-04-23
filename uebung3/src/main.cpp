@@ -52,10 +52,12 @@ int main()
             (const char*)test_string_100,\
             test_string_100.GetLength(),\
             test_string_100.SizeOf());
+
     CREATE(test_string20_2,20);
     /*printf("-->Test %d. Copy Class:\n",counter++);
      *test_string20_2="zyxw";
      * fails-->> test_string_20=test_string20_2;
      */
+
     printf("--> Test ENDE \n");
 }
