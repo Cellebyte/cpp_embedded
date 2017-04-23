@@ -4,9 +4,11 @@
 #ifndef PREALLOCSTRING_H
 #define PREALLOCSTRING_H
 #define CREATE(varName,size) PreAllocString<size> varName;
+
 #define DISALLOW_COPY(class_name) \
 class_name(const class_name&); \
 class_name& operator =(const class_name&);
+
 
 #include <cstdarg>
 #include <cstddef>
@@ -19,8 +21,7 @@ class PreAllocString
         size_t used_length;
         const size_t max_length = MAX_LENGTH;
         char string_storage[MAX_LENGTH];
-
-    private:
+  
         const char* GetFrontPointer() const
         {
             return &string_storage[0];
@@ -36,8 +37,9 @@ class PreAllocString
             Empty();
         }
 
-        DISALLOW_COPY(PreAllocString);
 
+        DISALLOW_COPY(PreAllocString);
+  
         /*  Current number of characters in string */
         size_t GetLength() const
         {
@@ -76,7 +78,7 @@ class PreAllocString
         void AddWhiteSpace()
         {
             if (used_length > max_length) return;
-
+          
             string_storage[used_length++]=' ';
         }
 
