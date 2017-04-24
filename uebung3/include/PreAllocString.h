@@ -28,7 +28,8 @@ class PreAllocString
         }
         const char& GetOnPosition(const int idx) const
         {
-            return string_storage[idx];
+            if (idx < static_cast<int>(max_length)) return string_storage[idx];
+            return string_storage[idx%max_length];
         }
 
     public:
