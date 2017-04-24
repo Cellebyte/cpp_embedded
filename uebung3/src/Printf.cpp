@@ -51,7 +51,7 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
      */
     int NULLING(type);          //   type of NumberString
     char NULLING(temp);         //   define buffer character
-    char* NULLING(erg);         //   result of switch case
+    char* erg = nullptr;         //   result of switch case
     unsigned int NULLING(val);  //   value for 2. 5. 6.
     int NULLING(value);         //   value for 1.
 
