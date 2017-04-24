@@ -21,7 +21,7 @@ class PreAllocString
         size_t used_length;
         const size_t max_length = MAX_LENGTH;
         char string_storage[MAX_LENGTH];
-  
+
         const char* GetFrontPointer() const
         {
             return &string_storage[0];
@@ -39,7 +39,7 @@ class PreAllocString
 
 
         DISALLOW_COPY(PreAllocString);
-  
+
         /*  Current number of characters in string */
         size_t GetLength() const
         {
@@ -78,7 +78,7 @@ class PreAllocString
         void AddWhiteSpace()
         {
             if (used_length > max_length) return;
-          
+
             string_storage[used_length++]=' ';
         }
 
