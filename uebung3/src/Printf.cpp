@@ -41,6 +41,9 @@ static const char digits[] = "0123456789abcdef";
 
 char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
 {
+    //Nullpointer Check
+    if(!dst || !end || !fmt || !vl)return END_OF_STRING;
+
     /*
      *  1.  %d for signed int
      *  2.  %u for unsigned int
@@ -50,14 +53,13 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
      *  6.  %b for binary representation (0b10101)
      *  7.  %% for %
      */
-    bool to_long= false;
+    bool to_long = false;
     int NULLING(type);          //   type of NumberString
     char NULLING(temp);         //   define buffer character
     char* erg = nullptr;         //   result of switch case
     unsigned int NULLING(val);  //   value for 2. 5. 6.
     int NULLING(value);         //   value for 1.
-
-    char* iter=dst;             // define an iterator over the array
+    char* iter = dst;             // define an iterator over the array
 
     while(END_OF_STRING != *fmt && iter < end)
     {
@@ -65,7 +67,12 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
         if (PROCENT != temp)    //  if not a format string copy char to destination array
         {
             *iter++ = temp;
-            if(is_end(iter,end))break;
+            if(is_end(iter,end))
+            {
+                iter--;
+                to_long = true;
+                break;
+            }
         }
         else
         {
@@ -76,6 +83,7 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
             {
                 case INTEGER:
                     value = va_arg(vl,int);   //  get element from stack
+                    if (!value)break;
                     if (0 > value)  //  check if integer is negative
                     {
                         *iter++ = '-';
@@ -105,6 +113,7 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
                     break;
                 case STRING:        //  --> Char Array
                     erg = va_arg(vl,char*);
+                    if(!erg)break;
                     while(END_OF_STRING != *erg)       //append given string without \0 to destination array
                     {
                         if(is_end(iter,end))
@@ -118,6 +127,7 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
                     break;
                 case HEXADECIMAL:
                     val = va_arg(vl,unsigned int);
+                    if(!val)break;
                     *iter++ = '0';
                     if(is_end(iter,end))
                     {
@@ -137,6 +147,7 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
 
                 case BINARY:
                     val=va_arg(vl,unsigned int);
+                    if(!val)break;
                     *iter++ = '0';
                     if(is_end(iter,end))
                     {
