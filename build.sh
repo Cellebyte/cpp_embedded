@@ -51,6 +51,8 @@ echo '	$(SILENT_MKDIR)mkdir $(OUTPUT)' >> Makefile
 make start
 make build
 
+echo ""
+
 if [ $? -eq 0 ]
 then
     echo -e "$GREEN Successfully Build!$NC"
@@ -58,6 +60,8 @@ else
     echo -e "--> $RED Build failed!$NC <--" >&2
     exit 1
 fi
+
+echo ""
 
 COUNTER=1
 
@@ -69,10 +73,10 @@ echo '' && \
 
 if [ $? -eq 0 ]
 then
-    echo -e "$(GREEN)Successfully Tested!$(NC)"
+    echo -e "$GREEN Successfully Tested!$NC"
     exit 0
 else
-    echo -e "-> $(RED)Test Fail!$(NC) <-" >&2
+    echo -e "-> $RED Test Fail!$NC <-" >&2
     exit 1
 fi
 
