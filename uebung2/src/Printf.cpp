@@ -28,6 +28,7 @@
  */
 
 char* unsigned_int_to_number_system_string(char*, unsigned int, int, const void*);
+bool is_end(char* , const void* );
 static const char digits[] = "0123456789abcdef";
 
 /*
@@ -41,6 +42,9 @@ static const char digits[] = "0123456789abcdef";
 
 char* Printf( char* dst, const void* end, const char* fmt, ... )
 {
+    //Nullpointer Check
+    if(!dst || !end || !fmt || !vl)return END_OF_STRING;
+
     /*
      *  1.  %d for signed int
      *  2.  %u for unsigned int
@@ -50,11 +54,13 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
      *  6.  %b for binary representation (0b10101)
      *  7.  %% for %
      */
+    bool to_long = false;
     int NULLING(type);          //   type of NumberString
     char NULLING(temp);         //   define buffer character
-    char* erg = nullptr;        //   result of switch case
+    char* erg = nullptr;         //   result of switch case
     unsigned int NULLING(val);  //   value for 2. 5. 6.
     int NULLING(value);         //   value for 1.
+    char* iter = dst;             // define an iterator over the array
 
     va_list vl;                 // variable arg list initialization
     va_start(vl, fmt);          // define variable params after fmt
@@ -66,6 +72,12 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
         if (PROCENT != temp)    //  if not a format string copy char to destination array
         {
             *iter++ = temp;
+            if(is_end(iter,end))
+            {
+                iter--;
+                to_long = true;
+                break;
+            }
         }
         else
         {
@@ -76,9 +88,16 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
             {
                 case INTEGER:
                     value = va_arg(vl,int);   //  get element from stack
+                    if (!value)break;
                     if (0 > value)  //  check if integer is negative
                     {
                         *iter++ = '-';
+                        if(is_end(iter,end))
+                        {
+                            iter--;
+                            to_long = true;
+                            break;
+                        }
                         value = value*-1;
                     }
                     val = static_cast<unsigned int>(value);
@@ -90,34 +109,80 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
                     break;
                 case CHARACTER:
                     *iter++ = va_arg(vl,int);
+                    if(is_end(iter,end))
+                    {
+                        iter--;
+                        to_long = true;
+                        break;
+                    }
                     break;
                 case STRING:        //  --> Char Array
                     erg = va_arg(vl,char*);
-                    while(END_OF_STRING != *erg && iter < end)       //append given string without \0 to destination array
+                    if(!erg)break;
+                    while(END_OF_STRING != *erg)       //append given string without \0 to destination array
                     {
+                        if(is_end(iter,end))
+                        {
+                            iter--;
+                            to_long = true;
+                            break;
+                        }
                         *iter++ = *erg++;
                     }
                     break;
                 case HEXADECIMAL:
                     val = va_arg(vl,unsigned int);
+                    if(!val)break;
                     *iter++ = '0';
+                    if(is_end(iter,end))
+                    {
+                        iter--;
+                        to_long = true;
+                        break;
+                    }
                     *iter++ = HEXADECIMAL;
+                    if(is_end(iter,end))
+                    {
+                        iter--;
+                        to_long = true;
+                        break;
+                    }
                     type = 16;
                     break;
 
                 case BINARY:
                     val=va_arg(vl,unsigned int);
+                    if(!val)break;
                     *iter++ = '0';
+                    if(is_end(iter,end))
+                    {
+                        iter--;
+                        to_long = true;
+                        break;
+                    }
                     *iter++ = BINARY;
+                    if(is_end(iter,end))
+                    {
+                        iter--;
+                        to_long = true;
+                        break;
+                    }
                     type = 2;
                     break;
 
                 case PROCENT:
                     *iter++ = temp;
+                    if(is_end(iter,end))
+                    {
+                        iter--;
+                        to_long = true;
+                        break;
+                    }
                     break;
                 default:            // if not defined return empty String
                     return END_OF_STRING;
             }
+            if (to_long) break;
             if (0 != type)
             {
                 iter=unsigned_int_to_number_system_string(iter,val,type,end);
@@ -125,22 +190,29 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
         }
         fmt++;      //   --> next character
     }
-    va_end(vl);
     *iter = END_OF_STRING;     //  append end of String
-    return dst;     //  return the created String
+    return iter;     //  return the created String
 }
 char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int type, const void* end)
 {
     char digit = digits[value%type];       // map right char in array with modulo function
     value = value/type;                     // decrease value divided by type
     if (value) buffer = unsigned_int_to_number_system_string(buffer,value, type, end); // recursion if value not zero
-    if (buffer < end)
+    if (buffer == end)
     {
-        *buffer++ = digit;    // add digit to string
-        return buffer;        // return pointer on last empty array field
+        return buffer--;        // return pointer on last empty array field
     }
     else
     {
-        return END_OF_STRING;
+        *buffer++ = digit;    // add digit to string
+        return buffer;
     }
+}
+bool is_end(char* iter, const void* end)
+{
+    if(iter==end)
+    {
+        return true;
+    }
+    return false;
 }
