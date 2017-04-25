@@ -24,11 +24,10 @@ class PreAllocString
 
         const char* GetFrontPointer() const
         {
-            return &string_storage[0];
+            return string_storage;
         }
         const char& GetOnPosition(const int idx) const
         {
-            //if (idx < static_cast<int>(max_length)) return string_storage[idx];
             return string_storage[idx%max_length];
         }
 
@@ -37,7 +36,6 @@ class PreAllocString
         {
             Empty();
         }
-
 
         DISALLOW_COPY(PreAllocString);
 
@@ -70,8 +68,7 @@ class PreAllocString
         {
             va_list vl;
             va_start(vl,format);
-            char* temp;
-            temp = Printf(string_storage+used_length,string_storage+max_length,format,vl);
+            char* temp = Printf(string_storage+used_length,string_storage+max_length,format,vl);
             used_length = temp - string_storage;
             va_end(vl);
         }
@@ -82,7 +79,6 @@ class PreAllocString
 
             string_storage[used_length++]=' ';
         }
-
         /*  Overloaded operators:
          *  1. '='      ->> varName = "String"
          *  2. '='      ->> varName = 'char'
@@ -109,7 +105,6 @@ class PreAllocString
             AddFormat("%s", rhs);
             return *this;
         }
-
         PreAllocString& operator+=( char const* rhs )
         {
             AddFormat("%s", rhs);
