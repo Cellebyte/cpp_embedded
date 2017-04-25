@@ -15,6 +15,10 @@
 #
 # -> Run ./build.sh
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color]]'
+
 
 touch Makefile
 touch config.mk
@@ -36,7 +40,7 @@ echo 'include config.mk' > Makefile
 echo 'all: $(OUTPUT) build' >> Makefile
 echo 'build:' >> Makefile
 
-for i in $(ls -d */); do echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/ || (echo Build "'"${i%%/}"' failed $$!"; exit 1)'>> Makefile \
+for i in $(ls -d */); do echo '	@set -e; $(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/' >> Makefile \
 && echo '	@echo' "$COUNTER"'. CC '"${i%%/}" >> Makefile \
 && (( COUNTER++ )) \
 ; done
@@ -46,6 +50,14 @@ echo '	$(SILENT_MKDIR)mkdir $(OUTPUT)' >> Makefile
 
 make start
 make build
+
+if [ $? -eq 0 ]
+then
+    echo -e "$GREEN Successfully Build!$NC"
+else
+    echo -e "--> $RED Build failed!$NC <--" >&2
+    exit 1
+fi
 
 COUNTER=1
 
@@ -57,10 +69,10 @@ echo '' && \
 
 if [ $? -eq 0 ]
 then
-    echo "Successfully build and tested!"
+    echo -e "$(GREEN)Successfully Tested!$(NC)"
     exit 0
 else
-    echo "Error in build or test!!" >&2
+    echo -e "-> $(RED)Test Fail!$(NC) <-" >&2
     exit 1
 fi
 
