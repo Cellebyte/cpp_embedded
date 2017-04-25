@@ -43,7 +43,7 @@ static const char digits[] = "0123456789abcdef";
 char* Printf( char* dst, const void* end, const char* fmt, ... )
 {
     //Nullpointer Check
-    if(!dst || !end || !fmt || !vl)return END_OF_STRING;
+    if(!dst || !end || !fmt)return END_OF_STRING;
 
     /*
      *  1.  %d for signed int
@@ -64,8 +64,6 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
 
     va_list vl;                 // variable arg list initialization
     va_start(vl, fmt);          // define variable params after fmt
-    char* iter=dst;             // define an iterator over the array
-
     while(END_OF_STRING != *fmt && iter < end)
     {
         temp = *fmt;
