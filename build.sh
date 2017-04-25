@@ -36,7 +36,7 @@ echo 'include config.mk' > Makefile
 echo 'all: $(OUTPUT) build' >> Makefile
 echo 'build:' >> Makefile
 
-for i in $(ls -d */); do echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/' >> Makefile \
+for i in $(ls -d */); do echo '	@$(CXX) $(CXXFLAGS) -o $(OUTPUT)/'"${i%%/}"' '"${i%%/}"'/src/*.cpp -I '"${i%%/}"'/include/ || (echo Build "'"${i%%/}"' failed $$!"; exit 1)'>> Makefile \
 && echo '	@echo' "$COUNTER"'. CC '"${i%%/}" >> Makefile \
 && (( COUNTER++ )) \
 ; done
