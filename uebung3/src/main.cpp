@@ -17,6 +17,12 @@ int main()
             (const char*)test_string_5,\
             test_string_5.GetLength(),\
             test_string_5.SizeOf());
+    test_string_5.AddFormat("%d",123456789103234243);
+    printf("\t\tInhalt: %s\t Länge: %d\t Maximum: %d\n",\
+            (const char*)test_string_5,\
+            test_string_5.GetLength(),\
+            test_string_5.SizeOf());
+            
     printf("-->Test %d. char operators:\n",counter++);
     /* Test operator = for char */
     test_string_20 = 'a';
@@ -27,6 +33,7 @@ int main()
             (const char*)test_string_20,
             test_string_20.GetLength(),
             test_string_20.SizeOf());
+
     printf("-->Test %d. String operators:\n",counter++);
     /* Test operator = for char array*/
     test_string_100 = "abcdef";
@@ -37,6 +44,7 @@ int main()
             (const char*)test_string_100,
             test_string_100.GetLength(),
             test_string_100.SizeOf());
+
     printf("-->Test %d. Array operator\n\t\tarray[%d]\t=\tValue: %c\n\t\tarray[%d]\t=\tValue: %c\n",
             counter++,
             1,
@@ -48,6 +56,7 @@ int main()
             (const char*)test_string_100,\
             test_string_100.GetLength(),\
             test_string_100.SizeOf());
+
     printf("-->Test %d. indirekt test of AddFormat and Empty:\n",counter++);
     test_string_100="abcdefghijklmnopqrstuvwxyz";
     printf("\t\tInhalt: %s\t Länge: %d\t Maximum: %d\n",\
