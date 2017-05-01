@@ -3,7 +3,7 @@
  */
 #ifndef POOLALLOCATOR_H
 #define POOLALLOCATOR_H
-#define CREATE (varName, blockCount, blockSize) Heap varName = Heap(blockCount,blockSize);
+#define CREATE(varName, blockCount, blockSize) Heap varName = Heap(blockCount,blockSize);
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -23,12 +23,34 @@ class Heap: public IHeap
     {
         storage *next;
     };
-    private:
-        void ExpandPoolSize ();
-        void CleanUp ();
-        storage* storage_head;
-        int blockCount;
-        size_t blockSize
+    void ExpandPoolSize ()
+    {
+        size_t size = (sizeof(blockSize) > sizeof(storage*)) ?
+        sizeof(blockSize) : sizeof(storage*);
+
+        storage* head = reinterpret_cast <storage*> (new char[size]);
+        storage_head = head;
+
+        for (int i = 0; i < blockCount; i++)
+        {
+            head->next = reinterpret_cast <storage*> (new char [size]);
+            head = head->next;
+        }
+
+        head->next = 0;
+    }
+    void CleanUp ()
+    {
+        storage* temp = storage_head;
+        for (; temp; temp = storage_head)
+        {
+            storage_head = storage_head->next;
+            delete [] temp; // remember this was a char array
+        }
+    }
+    storage* storage_head;
+    int blockCount;
+    size_t blockSize;
 
     public:
         Heap (int blockCount, size_t blockSize)
@@ -42,8 +64,9 @@ class Heap: public IHeap
         {
             CleanUp ();
         }
-        virtual void* Allocate(size_t);
-        virtual void  Deallocate(void*);
-        virtual size_t Available() const = 0;
+        void * Allocate (size_t sizeInBytes);
+        void Deallocate (void *);
+        /* Returns remaining # of available bytes */
+        size_t Available () const;
 };
 #endif
