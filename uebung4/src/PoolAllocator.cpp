@@ -3,69 +3,51 @@
 */
 
 #include "PoolAllocator.h"
-class Heap: public IHeap
-{
-    struct FreeStore
-    {
-        FreeStore *next;
-    };
-    void expandPoolSize ();
-    void cleanUp ();
-    FreeStore* freeStoreHead;
-    size_t allocated_size
-    public:
-    Heap ()
-    {
-        freeStoreHead = 0;
-        expandPoolSize ();
-    }
-    virtual ~Heap ()
-    {
-        cleanUp ();
-    }
-    virtual void* Allocate(size_t);
-    virtual void  Deallocate(void*);
-    size_t Available () const
-    {
-        return allocated_size;
-    }
-};
 
 inline void* Heap::Allocate(size_t size)
 {
-    if (0 == freeStoreHead)
-    expandPoolSize ();
+    if (0 == storage_head)
+            expandPoolSize ();
 
-    FreeStore* head = freeStoreHead;
-    freeStoreHead = head->next;
+    storage* head = storage_head;
+    storage_head = head->next;
+    blockCount--;
     return head;
+}
+inline size_t Heap::Available()
+{
+    return blockCount;
 }
 inline void Heap::Deallocate(void* deleted)
 {
-    FreeStore* head = static_cast <FreeStore*> (deleted);
-    head->next = freeStoreHead;
-    freeStoreHead = head;
+    storage* head = static_cast <storage*> (deleted);
+    head->next = storage_head;
+    storage_head = head;
+    blockCount++;
 }
-void Heap::expandPoolSize ()
+void Heap::ExpandPoolSize ()
 {
-    size_t size = (sizeof(Complex) > sizeof(FreeStore*)) ?
-    sizeof(Complex) : sizeof(FreeStore*);
-    FreeStore* head = reinterpret_cast <FreeStore*> (new char[size]);
-    freeStoreHead = head;
+    size_t size = (sizeof(blockSize) > sizeof(storage*)) ?
+    sizeof(blockSize) : sizeof(storage*);
 
-    for (int i = 0; i < POOLSIZE; i++) {
-    head->next = reinterpret_cast <FreeStore*> (new char [size]);
-    head = head->next;
-}
+    storage* head = reinterpret_cast <storage*> (new char[size]);
+    storage_head = head;
 
-head->next = 0;
+    for (int i = 0; i < blockCount; i++)
+    {
+        head->next = reinterpret_cast <storage*> (new char [size]);
+        head = head->next;
+    }
+
+    head->next = 0;
 }
 
 void Heap::cleanUp()
 {
-FreeStore* nextPtr = freeStoreHead;
-for (; nextPtr; nextPtr = freeStoreHead) {
-freeStoreHead = freeStoreHead->next;
-delete [] nextPtr; // remember this was a char array
-}
+    storage* temp = storage_head;
+    for (; temp; temp = storage_head)
+    {
+        storage_head = storage_head->next;
+        delete [] temp; // remember this was a char array
+    }
 }
