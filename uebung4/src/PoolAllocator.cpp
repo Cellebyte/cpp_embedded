@@ -4,25 +4,15 @@
 
 #include "PoolAllocator.h"
 
-inline void* Heap::Allocate(size_t size)
+inline void* Heap::Allocate(size_t)
 {
-    size++;
-    if (0 == storage_head)
-            ExpandPoolSize ();
-
-    storage* head = storage_head;
-    storage_head = head->next;
-    blockCount--;
-    return head;
+    return 0;
 }
 inline size_t Heap::Available() const
 {
-    return blockCount;
+    return 0;
 }
-inline void Heap::Deallocate(void* deleted)
+inline void Heap::Deallocate(void*)
 {
-    storage* head = static_cast <storage*> (deleted);
-    head->next = storage_head;
-    storage_head = head;
-    blockCount++;
+
 }
