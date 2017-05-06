@@ -21,12 +21,13 @@ class IHeap
 struct Block
 {
     bool allocated;
-    bool first;
-    size_t size;
-    uint8_t* begin;
-    uint8_t* end;
-    Block* next;
+    bool first;         //set by chain allocation size >= blockSize
+    size_t size;        //sizeof block
+    uint8_t* begin;     // pointer to begin of block in pool
+    uint8_t* end;       // pointer to end of block in pool
+    Block* next;        //set by chain allocation for next block in chain
 
+    /*#DEBUG
     void getInfo()
     {
         printf("\tisAllocated:\t%d (0=False,1=True)\n\
@@ -43,6 +44,7 @@ struct Block
                 next\
             );
     }
+    */
 };
 
 class Heap: public IHeap
@@ -71,7 +73,7 @@ class Heap: public IHeap
                 slice[block].allocated = false;
                 slice[block].first = false;
                 slice[block].size = block_size;
-                printf("Block: %u",block+1);
+                //#DEBUG printf("Block: %u",block+1);
                 if( static_cast<size_t>(-1) != block - 1)
                 {
                     slice[block].begin = (slice[block-1].end + 1);
@@ -79,12 +81,13 @@ class Heap: public IHeap
                 }
                 else
                 {
-
-                    slice[block].begin = pool;                //different allocation first block
+                    //different allocation first block
+                    slice[block].begin = pool;
                     slice[block].end = (pool+block_size);
                 }
                 slice[block].next = nullptr;
-                slice[block].getInfo();
+                //no chains on begin
+                //#DEBUG slice[block].getInfo();
             }
             /*
             //#DEBUG
@@ -106,7 +109,9 @@ template <size_t blockCount, size_t blockSize>
 class Pool: public Heap
 {
     private:
+        //Byte pool for allocation
         uint8_t pool [blockSize * blockCount] = {0};
+        //management Array
         Block slice [blockCount];
     public:
         Pool() : Heap(pool, slice, blockCount, blockSize) {}
