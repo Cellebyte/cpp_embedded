@@ -4,6 +4,9 @@
 #ifndef PREALLOCSTRING_H
 #define PREALLOCSTRING_H
 #define CREATE(varName,size) PreAllocString<size> varName;
+#define DISALLOW_COPY(class_name) \
+class_name(const class_name&); \
+class_name& operator =(const class_name&);
 
 #define DISALLOW_COPY(class_name) \
 class_name(const class_name&); \
