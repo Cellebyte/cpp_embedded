@@ -1,6 +1,8 @@
 /*
  *  @author Marcel Fest
  */
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H
 class ClientServer
 {
     public:
@@ -12,3 +14,5 @@ class ClientServer
 
         bool Start ( Mode mode , unsigned int port , const char * ip );
 };
+
+#endif
