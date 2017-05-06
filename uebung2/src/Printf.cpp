@@ -188,6 +188,7 @@ char* Printf( char* dst, const void* end, const char* fmt, ... )
         }
         fmt++;      //   --> next character
     }
+    va_end(vl);
     *iter = END_OF_STRING;     //  append end of String
     return iter;     //  return the created String
 }
