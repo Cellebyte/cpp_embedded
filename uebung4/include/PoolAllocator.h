@@ -62,7 +62,6 @@ class Heap: public IHeap
                 slice[block].allocated = false;
                 slice[block].first = false;
                 slice[block].next = nullptr;
-                slice[block].getInfo();
                 //no chains on begin
             }
             printf("2.Block:%x\n",pool+10);
