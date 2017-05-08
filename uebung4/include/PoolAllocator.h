@@ -22,30 +22,8 @@ struct Block
 {
     /*  Information on pool */
     bool allocated;
-    bool first;         //set by chain allocation size >= blockSize
-    size_t size;        //sizeof block
-    uint8_t* begin;     // pointer to begin of block in pool
-    uint8_t* end;       // pointer to end of block in pool
+    bool first;         // set by chain allocation size >= blockSize
     Block* next;        //set by chain allocation for next block in chain
-
-    /*#DEBUG
-    void getInfo()
-    {
-        printf("\tisAllocated:\t%d (0=False,1=True)\n\
-                isFirst:\t\t%d\n\
-                size:\t\t%d\n\
-                begin:\t\t%x\n\
-                end:\t\t%x\n\
-                next:\t\t%x\n",\
-                allocated,\
-                first,\
-                size,\
-                begin,\
-                end,\
-                next\
-            );
-    }
-    */
 };
 
 class Heap: public IHeap
@@ -83,32 +61,12 @@ class Heap: public IHeap
             {
                 slice[block].allocated = false;
                 slice[block].first = false;
-                slice[block].size = block_size;
-                //#DEBUG printf("Block: %u",block+1);
-                if( static_cast<size_t>(-1) != block - 1)
-                {
-                    slice[block].begin = (slice[block-1].end + 1);
-                    slice[block].end = (slice[block].begin + block_size-1); //Offset Fix
-                }
-                else
-                {
-                    //different allocation first block
-                    slice[block].begin = pool;
-                    slice[block].end = (pool+block_size);
-                }
                 slice[block].next = nullptr;
+                slice[block].getInfo();
                 //no chains on begin
-                //#DEBUG slice[block].getInfo();
             }
-            /*
-            //#DEBUG
-            printf("Start");
-            slice[0].getInfo();
-            printf("Start_Array = %x\n",pool );
-            printf("End");
-            slice[block_count-1].getInfo();
-            printf("End_Array = %x\n",pool+(block_count*block_size));
-            */
+            printf("2.Block:%x\n",pool+10);
+            printf("Start:\t%x\tEnde:\t%x\n",pool, pool+(block_size*block_count) );
         }
     public:
         /*

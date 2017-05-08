@@ -33,7 +33,7 @@ inline void* Heap::Allocate(size_t size)
         {
             if(! slice[block].allocated)
             {
-                allocated = static_cast<void*>(slice[block].begin);
+                allocated = static_cast<void*>(pool+(block_size*block));
                 slice[block].allocated = true;
                 return allocated;
             }
@@ -48,7 +48,7 @@ inline size_t Heap::Available() const
     {
         if(! slice[block].allocated)
         {
-            temp = temp + slice[block].size;
+            temp = temp + block_size;
         }
     }
     return temp;
@@ -59,7 +59,7 @@ inline void Heap::Deallocate(void* deleted)
     //#DEBUG printf("Before loop\n");
     for(size_t block=0; block < block_count; block++)
     {
-        if(slice[block].begin == static_cast<uint8_t*>(deleted))
+        if(pool+(block_size*block) == static_cast<uint8_t*>(deleted))
         {
             //Easy Case;
             if(! slice[block].first)
@@ -91,7 +91,6 @@ inline bool Heap::IsChainable(int block, size_t blocks)
     //lookahead if chain fit from block with ammount of blocks
     for(size_t chain = 0; chain < blocks; chain++)
     {
-        //#DEBUG printf("Block: %u\n", block + chain);
         if(slice[block + chain].allocated)
         {
             return false;
@@ -103,26 +102,21 @@ inline bool Heap::IsChainable(int block, size_t blocks)
 inline void* Heap::CreateBlockChain(int block, size_t blocks)
 {
     slice[block].first = true;
-    void* allocated = static_cast<void*>(slice[block].begin);
+    void* allocated = static_cast<void*>(pool+(block_size*block));
 
     for(size_t chain = 0; chain < blocks; chain++)
     {
-        //#DEBUG printf("Chain: %u\n",chain);
-        //#DEBUG printf("Block: %u\n", block + chain);
+
         slice[(block + chain)].allocated = true;
 
         if(chain == blocks-1)
         {
-            //#DEBUG printf("If:\n");
             slice[(block + chain)].next = nullptr;
-            //#DEBUG printf("Block: %u\n", block + chain);
             break;
         }
         else
         {
-            //#DEBUG printf("Else:\n");
             slice[block + chain].next = &slice[block + chain + 1];
-            //#DEBUG printf("Next_block: %x\n",slice[block + chain].next->begin);
         }
     }
     return allocated;
