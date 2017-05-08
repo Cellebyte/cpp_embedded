@@ -5,37 +5,17 @@
 
 inline void* Heap::Allocate(size_t size)
 {
+    if(size > block_size) return nullptr;
+
     void* allocated = nullptr;
     if(static_cast<size_t>(0) == size) return nullptr;
-    size_t blocks = size / block_size;
-    size_t rest = size % block_size;
     for(size_t block=0; block < block_count; block++)
     {
-        //Difficult Case of size bigger than block_size
-        if(block_size <= size)
+        if(! slice[block].allocated)
         {
-            if(0 != rest)
-            {
-                blocks++;
-            }
-            if(blocks > block_count)
-            {
-                return nullptr;
-            }
-            if(IsChainable(block,blocks))
-            {
-                return CreateBlockChain(block,blocks);
-            }
-        }
-        //Easy Case of size equal or less than block_size
-        else
-        {
-            if(! slice[block].allocated)
-            {
-                allocated = static_cast<void*>(pool+(block_size*block));
-                slice[block].allocated = true;
-                return allocated;
-            }
+            allocated = static_cast<void*>(pool+(block_size*block));
+            slice[block].allocated = true;
+            return allocated;
         }
     }
     return allocated;
@@ -59,60 +39,8 @@ inline void Heap::Deallocate(void* deleted)
     {
         if(pool+(block_size*block) == static_cast<uint8_t*>(deleted))
         {
-            //Easy Case;
-            if(! slice[block].first)
-            {
-                slice[block].allocated = false;
-                return;
-            }
-            //Difficult Case;
-            slice[block].first = false;
             slice[block].allocated = false;
-            Block* temp = &slice[block];
-            Block* temp2 = static_cast<Block*>(nullptr);
-            while(temp->next)
-            {
-                temp2 = temp;
-                temp = temp->next;
-                temp->allocated = false;
-                temp2->next = static_cast<Block*>(nullptr);
-            }
+            return;
         }
     }
-    return;
-}
-inline bool Heap::IsChainable(int block, size_t blocks)
-{
-    //lookahead if chain fit from block with ammount of blocks
-    for(size_t chain = 0; chain < blocks; chain++)
-    {
-        if(slice[block + chain].allocated)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-inline void* Heap::CreateBlockChain(int block, size_t blocks)
-{
-    slice[block].first = true;
-    void* allocated = static_cast<void*>(pool+(block_size*block));
-
-    for(size_t chain = 0; chain < blocks; chain++)
-    {
-
-        slice[(block + chain)].allocated = true;
-
-        if(chain == blocks-1)
-        {
-            slice[(block + chain)].next = nullptr;
-            break;
-        }
-        else
-        {
-            slice[block + chain].next = &slice[block + chain + 1];
-        }
-    }
-    return allocated;
 }

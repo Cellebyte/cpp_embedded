@@ -22,8 +22,6 @@ struct Block
 {
     /*  Information on pool */
     bool allocated;
-    bool first;         // set by chain allocation size >= blockSize
-    Block* next;        //set by chain allocation for next block in chain
 };
 
 class Heap: public IHeap
@@ -35,16 +33,6 @@ class Heap: public IHeap
         Block* const slice;
         const size_t block_count;
         const size_t block_size;
-        /*  @param <int> as begin
-        *   @param <size_t> length
-        *   @return <void*> pointer on first block in blockchain
-        */
-        void* CreateBlockChain(int, size_t);
-        /*  @param <int> as begin
-        *   @param <size_t> length
-        *   @return <bool> IsChainable (true -> block fit | false -> block does not fit)
-        */
-        bool IsChainable(int, size_t);
     protected:
         Heap(
             uint8_t* pool,\
@@ -60,9 +48,6 @@ class Heap: public IHeap
             for(size_t block = 0; block < block_count; block++)
             {
                 slice[block].allocated = false;
-                slice[block].first = false;
-                slice[block].next = nullptr;
-                //no chains on begin
             }
             printf("2.Block:%x\n",pool+10);
             printf("Start:\t%x\tEnde:\t%x\n",pool, pool+(block_size*block_count) );
