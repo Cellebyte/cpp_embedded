@@ -1,7 +1,6 @@
 /*
  *   @author: Marcel Fest
 */
-
 #include "PoolAllocator.h"
 
 inline void* Heap::Allocate(size_t size)
@@ -56,7 +55,6 @@ inline size_t Heap::Available() const
 inline void Heap::Deallocate(void* deleted)
 {
     if (nullptr == deleted) return;
-    //#DEBUG printf("Before loop\n");
     for(size_t block=0; block < block_count; block++)
     {
         if(pool+(block_size*block) == static_cast<uint8_t*>(deleted))
@@ -64,7 +62,6 @@ inline void Heap::Deallocate(void* deleted)
             //Easy Case;
             if(! slice[block].first)
             {
-                //#DEBUG printf("I am not a chain\n");
                 slice[block].allocated = false;
                 return;
             }
@@ -75,12 +72,10 @@ inline void Heap::Deallocate(void* deleted)
             Block* temp2 = static_cast<Block*>(nullptr);
             while(temp->next)
             {
-                //#DEBUG printf("This is Block:\t %d\n",block+1);
                 temp2 = temp;
                 temp = temp->next;
                 temp->allocated = false;
                 temp2->next = static_cast<Block*>(nullptr);
-
             }
         }
     }
