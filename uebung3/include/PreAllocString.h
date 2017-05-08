@@ -22,7 +22,6 @@ class PreAllocString
 {
     private:
         size_t used_length;
-        static const size_t max_length = MAX_LENGTH;
         char string_storage[MAX_LENGTH];
 
         const char* GetFrontPointer() const
@@ -31,7 +30,7 @@ class PreAllocString
         }
         const char& GetOnPosition(const int idx) const
         {
-            return string_storage[idx%max_length];
+            return string_storage[idx%MAX_LENGTH];
         }
 
     public:
@@ -51,13 +50,13 @@ class PreAllocString
         /*  Maximum number of characters possible */
         constexpr size_t SizeOf()
         {
-            return max_length;
+            return MAX_LENGTH;
         }
 
         /*  Set to '\0' on all cells and point to start*/
         void Empty()
         {
-            for(size_t n = 0; n <= max_length; n++)
+            for(size_t n = 0; n <= MAX_LENGTH; n++)
             {
                 string_storage[n] = '\0';
             }
@@ -71,14 +70,14 @@ class PreAllocString
         {
             va_list vl;
             va_start(vl,format);
-            char* temp = Printf(string_storage+used_length,string_storage+max_length,format,vl);
+            char* temp = Printf(string_storage+used_length,string_storage+MAX_LENGTH,format,vl);
             used_length = temp - string_storage;
             va_end(vl);
         }
         /* Adds one Space into the next Writable Character and increments*/
         void AddWhiteSpace()
         {
-            if (used_length > max_length) return;
+            if (used_length > MAX_LENGTH) return;
 
             string_storage[used_length++]=' ';
         }
