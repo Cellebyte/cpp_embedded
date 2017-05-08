@@ -67,7 +67,7 @@ class Heap: public IHeap
         *   @return <bool> IsChainable (true -> block fit | false -> block does not fit)
         */
         bool IsChainable(int, size_t);
-    public:
+    protected:
         Heap(
             uint8_t* pool,\
             Block* slice,\
@@ -110,6 +110,7 @@ class Heap: public IHeap
             printf("End_Array = %x\n",pool+(block_count*block_size));
             */
         }
+    public:
         /*
         *   @param <size_t> sizeInBytes
         */
