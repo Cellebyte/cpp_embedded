@@ -8,72 +8,33 @@ inline void* Heap::Allocate(size_t size)
 {
     void* allocated = nullptr;
     if(static_cast<size_t>(0) == size) return nullptr;
-    if(block_size >= size)
+    size_t blocks = size / block_size;
+    size_t rest = size % block_size;
+    for(size_t block=0; block < block_count; block++)
     {
-        for(size_t block=0; block < block_count; block++)
+        //Difficult Case of size bigger than block_size
+        if(block_size <= size)
+        {
+            if(0 != rest)
+            {
+                blocks++;
+            }
+            if(blocks > block_count)
+            {
+                return nullptr;
+            }
+            if(IsChainable(block,blocks))
+            {
+                return CreateBlockChain(block,blocks);
+            }
+        }
+        //Easy Case of size equal or less than block_size
+        else
         {
             if(! slice[block].allocated)
             {
                 allocated = static_cast<void*>(slice[block].begin);
                 slice[block].allocated = true;
-                break;
-            }
-        }
-        return allocated;
-    }
-    else
-    {
-        size_t blocks = size / block_size;
-        size_t rest = size % block_size;
-        if(blocks > block_count)
-        {
-            return nullptr;
-        }
-        if(static_cast<size_t>(0) != rest)
-        {
-            blocks++;
-        }
-        //#DEBUG printf("Blocks: %d\tRest: %d\n",blocks,rest);
-        for(size_t block = 0; block < blocks; block++)
-        {
-            //#DEBUG printf("Chainable?\n");
-            bool chainable = true;
-            for(size_t chain = 0; chain < blocks; chain++)
-            {
-                //#DEBUG printf("Block: %u\n", block + chain);
-                if(slice[block + chain].allocated)
-                {
-                    chainable = false;
-                    break;
-                }
-            }
-            if(chainable)
-            {
-                //#DEBUG printf("Chainable Yes\n");
-                slice[block].first = true;
-                allocated = static_cast<void*>(slice[block].begin); // first block of blockchain
-
-                for(size_t chain = 0; chain < blocks; chain++)
-                {
-                    //#DEBUG printf("Chain: %u\n",chain);
-                    //#DEBUG printf("Block: %u\n", block + chain);
-                    slice[(block + chain)].allocated = true;
-
-                    if(chain == blocks-1)
-                    {
-                        //#DEBUG printf("If:\n");
-                        slice[(block + chain)].next = nullptr;
-                        //#DEBUG printf("Block: %u\n", block + chain);
-                        break;
-                    }
-                    else
-                    {
-                        //#DEBUG printf("Else:\n");
-                        slice[block + chain].next = &slice[block + chain + 1];
-                        //#DEBUG printf("Next_block: %x\n",slice[block + chain].next->begin);
-                    }
-
-                }
                 return allocated;
             }
         }
@@ -100,12 +61,14 @@ inline void Heap::Deallocate(void* deleted)
     {
         if(slice[block].begin == static_cast<uint8_t*>(deleted))
         {
+            //Easy Case;
             if(! slice[block].first)
             {
                 //#DEBUG printf("I am not a chain\n");
                 slice[block].allocated = false;
                 return;
             }
+            //Difficult Case;
             slice[block].first = false;
             slice[block].allocated = false;
             Block* temp = &slice[block];
@@ -122,4 +85,45 @@ inline void Heap::Deallocate(void* deleted)
         }
     }
     return;
+}
+inline bool Heap::IsChainable(int block, size_t blocks)
+{
+    //lookahead if chain fit from block with ammount of blocks
+    for(size_t chain = 0; chain < blocks; chain++)
+    {
+        //#DEBUG printf("Block: %u\n", block + chain);
+        if(slice[block + chain].allocated)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+inline void* Heap::CreateBlockChain(int block, size_t blocks)
+{
+    slice[block].first = true;
+    void* allocated = static_cast<void*>(slice[block].begin);
+
+    for(size_t chain = 0; chain < blocks; chain++)
+    {
+        //#DEBUG printf("Chain: %u\n",chain);
+        //#DEBUG printf("Block: %u\n", block + chain);
+        slice[(block + chain)].allocated = true;
+
+        if(chain == blocks-1)
+        {
+            //#DEBUG printf("If:\n");
+            slice[(block + chain)].next = nullptr;
+            //#DEBUG printf("Block: %u\n", block + chain);
+            break;
+        }
+        else
+        {
+            //#DEBUG printf("Else:\n");
+            slice[block + chain].next = &slice[block + chain + 1];
+            //#DEBUG printf("Next_block: %x\n",slice[block + chain].next->begin);
+        }
+    }
+    return allocated;
 }
