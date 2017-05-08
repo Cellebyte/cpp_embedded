@@ -4,10 +4,10 @@
 #ifndef PREALLOCSTRING_H
 #define PREALLOCSTRING_H
 #define CREATE(varName,size) PreAllocString<size> varName;
-#define DISALLOW_COPY(class_name) \
+/*#define DISALLOW_COPY(class_name) \
 class_name(const class_name&); \
 class_name& operator =(const class_name&);
-
+*/
 #define DISALLOW_COPY(class_name) \
 class_name(const class_name&); \
 class_name& operator =(const class_name&);
@@ -22,7 +22,7 @@ class PreAllocString
 {
     private:
         size_t used_length;
-        const size_t max_length = MAX_LENGTH;
+        static const size_t max_length = MAX_LENGTH;
         char string_storage[MAX_LENGTH];
 
         const char* GetFrontPointer() const
@@ -40,7 +40,7 @@ class PreAllocString
             Empty();
         }
 
-        DISALLOW_COPY(PreAllocString);
+        //DISALLOW_COPY(PreAllocString);
 
         /*  Current number of characters in string */
         size_t GetLength() const
