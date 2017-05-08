@@ -3,6 +3,7 @@
  */
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
+
 class ClientServer
 {
     public:
