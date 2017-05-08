@@ -22,7 +22,7 @@ int main()
             (const char*)test_string_5,\
             test_string_5.GetLength(),\
             test_string_5.SizeOf());
-            
+
     printf("-->Test %d. char operators:\n",counter++);
     /* Test operator = for char */
     test_string_20 = 'a';
@@ -64,11 +64,18 @@ int main()
             test_string_100.GetLength(),\
             test_string_100.SizeOf());
 
-    //CREATE(test_string20_2,20);
-    /*printf("-->Test %d. Copy Class:\n",counter++);
-     *test_string20_2="zyxw";
-     * fails-->> test_string_20=test_string20_2;
-     */
+    CREATE(test_string20_2,20);
+    printf("-->Test %d. Copy Class:\n",counter++);
+    printf("\t\tInhalt: %s\t Länge: %d\t Maximum: %d\n",
+            (const char*)test_string_20,
+            test_string_20.GetLength(),
+            test_string_20.SizeOf());
+    test_string20_2="zyxw";
+    test_string_20=test_string20_2;
+    printf("\t\tInhalt: %s\t Länge: %d\t Maximum: %d\n",
+            (const char*)test_string_20,
+            test_string_20.GetLength(),
+            test_string_20.SizeOf());
 
     printf("--> Test ENDE \n");
 }

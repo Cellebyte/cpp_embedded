@@ -20,6 +20,7 @@ class IHeap
 
 struct Block
 {
+    /*  Information on pool */
     bool allocated;
     bool first;         //set by chain allocation size >= blockSize
     size_t size;        //sizeof block
@@ -56,7 +57,17 @@ class Heap: public IHeap
         Block* const slice;
         const size_t block_count;
         const size_t block_size;
-    public:
+        /*  @param <int> as begin
+        *   @param <size_t> length
+        *   @return <void*> pointer on first block in blockchain
+        */
+        void* CreateBlockChain(int, size_t);
+        /*  @param <int> as begin
+        *   @param <size_t> length
+        *   @return <bool> IsChainable (true -> block fit | false -> block does not fit)
+        */
+        bool IsChainable(int, size_t);
+    protected:
         Heap(
             uint8_t* pool,\
             Block* slice,\
@@ -99,8 +110,16 @@ class Heap: public IHeap
             printf("End_Array = %x\n",pool+(block_count*block_size));
             */
         }
+    public:
+        /*
+        *   @param <size_t> sizeInBytes
+        */
         void * Allocate (size_t sizeInBytes);
-        void Deallocate (void *);
+        /*
+        *   @param <void*> block
+        *   * try to delete given block | blockchain
+        */
+        void Deallocate (void * block);
         /* Returns remaining # of available bytes */
         size_t Available () const;
 };

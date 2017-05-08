@@ -16,7 +16,9 @@ int main()
     void* b = test.Allocate(20);
     printf("\t\tAllocated Address:\t%x\n", b);
     printf("\t\tAvailable Space:\t%u\n",test.Available());
+    printf("\t\tDeallocate:\t%x\n",a );
     test.Deallocate(a);
+    printf("\t\tDeallocate:\t%x\n",b );
     test.Deallocate(b);
     printf("\t\tAvailable Space:\t%u\n",test.Available());
 
