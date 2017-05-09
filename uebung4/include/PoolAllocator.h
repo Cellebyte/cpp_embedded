@@ -21,7 +21,7 @@ class IHeap
 struct Block
 {
     /*  Information on pool */
-    bool allocated;
+    bool allocated = false;
     uint8_t* storage = nullptr;
 };
 
@@ -67,7 +67,6 @@ class Pool: public Heap
         Pool() : Heap(sliced, blockCount, blockSize) {
             for(size_t block = 0; block < blockCount; block++)
             {
-                sliced[block].allocated = false;
                 sliced[block].storage = storage+(block*blockSize);
             }
         }
