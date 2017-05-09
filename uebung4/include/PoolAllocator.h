@@ -22,36 +22,27 @@ struct Block
 {
     /*  Information on pool */
     bool allocated;
+    uint8_t* storage = nullptr;
 };
 
 class Heap: public IHeap
 {
     private:
         /* bytewise memory, will by only given out as blocks of blocksize */
-        uint8_t* const pool;
         /* bitmap of blocks, true=alocated, false=free */
-        Block* const slice;
+        Block* const sliced;
         const size_t block_count;
         const size_t block_size;
     protected:
         Heap(
-            uint8_t* pool,\
-            Block* slice,\
+            Block* sliced,\
             size_t block_count,\
             size_t block_size\
         ):
-            pool(pool),\
-            slice(slice),\
+            sliced(sliced),\
             block_count(block_count),\
-            block_size(block_size)\
-        {
-            for(size_t block = 0; block < block_count; block++)
-            {
-                slice[block].allocated = false;
-            }
-            printf("2.Block:%x\n",pool+10);
-            printf("Start:\t%x\tEnde:\t%x\n",pool, pool+(block_size*block_count) );
-        }
+            block_size(block_size)
+            {}
     public:
         /*
         *   @param <size_t> sizeInBytes
@@ -70,11 +61,17 @@ template <size_t blockCount, size_t blockSize>
 class Pool: public Heap
 {
     private:
-        //Byte pool for allocation
-        uint8_t pool [blockSize * blockCount] = {0};
-        //management Array
-        Block slice [blockCount];
+        Block sliced [blockCount];
+        uint8_t storage [blockSize*blockCount] = {0};
     public:
-        Pool() : Heap(pool, slice, blockCount, blockSize) {}
+        Pool() : Heap(sliced, blockCount, blockSize) {
+            printf("Anfang Array: %x\tEnde: %x\n", storage, storage+(blockSize*blockCount));
+            for(size_t block = 0; block < blockCount; block++)
+            {
+                sliced[block].allocated = false;
+                sliced[block].storage = storage+(block*blockSize);
+                printf("Anfang: %x\t Ende: %x\n",storage+(block*blockSize),storage+(block*blockSize)+blockSize-1);
+            }
+        }
 };
 #endif

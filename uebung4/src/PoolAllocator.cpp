@@ -9,34 +9,36 @@ inline void* Heap::Allocate(size_t size)
 
     for(size_t block=0; block < block_count; block++)
     {
-        if(! slice[block].allocated)
+        if(! sliced[block].allocated)
         {
-            slice[block].allocated = true;
-            return static_cast<void*>(pool+(block_size*block));
+            sliced[block].allocated = true;
+            return static_cast<void*>(sliced[block].storage);
         }
     }
     return nullptr;
 }
+
 inline size_t Heap::Available() const
 {
     size_t temp = 0;
     for(size_t block=0; block < block_count; block++)
     {
-        if(! slice[block].allocated)
+        if(! sliced[block].allocated)
         {
             temp = temp + block_size;
         }
     }
     return temp;
 }
+
 inline void Heap::Deallocate(void* deleted)
 {
     if (nullptr == deleted) return;
     for(size_t block=0; block < block_count; block++)
     {
-        if(pool+(block_size*block) == static_cast<uint8_t*>(deleted))
+        if( sliced[block].storage == static_cast<uint8_t*>(deleted))
         {
-            slice[block].allocated = false;
+            sliced[block].allocated = false;
             return;
         }
     }

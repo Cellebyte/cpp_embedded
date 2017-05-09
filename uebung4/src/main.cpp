@@ -6,13 +6,13 @@
 #include <cstdio>
 int main()
 {
-    //int counter=1;
-    int size_20 = 20;
-    int size_50 = 50;
-    int size_100 = 100;
-    CREATE(test_20,15,20);
-    CREATE(test_50,15,50);
-    CREATE(test_100,15,100);
+    const int size_20 = 20;
+    const int size_50 = 50;
+    const int size_100 = 100;
+    CREATE(test_20,15,static_cast<size_t>(size_20));
+    CREATE(test_50,15,static_cast<size_t>(size_50));
+    CREATE(test_100,15,static_cast<size_t>(size_100));
+    printf("%x%x%x",test_20,test_50,test_100);
     void* a [15] = {0};
     void* b [15] = {0};
     void* c [15] = {0};
