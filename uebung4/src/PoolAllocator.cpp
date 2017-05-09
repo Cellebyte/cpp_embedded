@@ -20,15 +20,15 @@ inline void* Heap::Allocate(size_t size)
 
 inline size_t Heap::Available() const
 {
-    size_t temp = 0;
+    size_t available = 0;
     for(size_t block=0; block < block_count; block++)
     {
         if(! sliced[block].allocated)
         {
-            temp = temp + block_size;
+            available += block_size;
         }
     }
-    return temp;
+    return available;
 }
 
 inline void Heap::Deallocate(void* deleted)

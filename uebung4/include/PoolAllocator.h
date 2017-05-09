@@ -46,11 +46,14 @@ class Heap: public IHeap
     public:
         /*
         *   @param <size_t> sizeInBytes
+        *   @return <void*> memory  or nullptr if sizeInBytes
+        *                                       larger the blockSize
+        *                                       or Pool is full
         */
         void * Allocate (size_t sizeInBytes);
         /*
-        *   @param <void*> block
-        *   * try to delete given block | blockchain
+        *   @param <void*> block pointer of allocated
+        *   try to delete given blockpointer
         */
         void Deallocate (void * block);
         /* Returns remaining # of available bytes */
