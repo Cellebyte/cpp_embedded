@@ -65,12 +65,10 @@ class Pool: public Heap
         uint8_t storage [blockSize*blockCount] = {0};
     public:
         Pool() : Heap(sliced, blockCount, blockSize) {
-            printf("Anfang Array: %x\tEnde: %x\n", storage, storage+(blockSize*blockCount));
             for(size_t block = 0; block < blockCount; block++)
             {
                 sliced[block].allocated = false;
                 sliced[block].storage = storage+(block*blockSize);
-                printf("Anfang: %x\t Ende: %x\n",storage+(block*blockSize),storage+(block*blockSize)+blockSize-1);
             }
         }
 };
