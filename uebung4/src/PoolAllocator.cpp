@@ -33,7 +33,9 @@ inline size_t Heap::Available() const
 
 inline void Heap::Deallocate(void* deleted)
 {
-    if (nullptr == deleted) return;
+    if ((nullptr == deleted) \
+        || (deleted < sliced[0].storage) \
+        || (deleted > sliced[block_count-1].storage+block_size) ) return;
     for(size_t block=0; block < block_count; block++)
     {
         if( sliced[block].storage == static_cast<uint8_t*>(deleted))
