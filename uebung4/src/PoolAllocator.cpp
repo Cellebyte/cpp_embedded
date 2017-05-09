@@ -5,20 +5,17 @@
 
 inline void* Heap::Allocate(size_t size)
 {
-    if(size > block_size) return nullptr;
+    if((size > block_size) || (static_cast<size_t>(0) == size)) return nullptr;
 
-    void* allocated = nullptr;
-    if(static_cast<size_t>(0) == size) return nullptr;
     for(size_t block=0; block < block_count; block++)
     {
         if(! slice[block].allocated)
         {
-            allocated = static_cast<void*>(pool+(block_size*block));
             slice[block].allocated = true;
-            return allocated;
+            return static_cast<void*>(pool+(block_size*block));
         }
     }
-    return allocated;
+    return nullptr;
 }
 inline size_t Heap::Available() const
 {
