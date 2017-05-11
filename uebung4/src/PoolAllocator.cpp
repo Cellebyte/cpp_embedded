@@ -20,20 +20,22 @@ inline void* Heap::Allocate(size_t size)
 
 inline size_t Heap::Available() const
 {
-    size_t temp = 0;
+    size_t available = 0;
     for(size_t block=0; block < block_count; block++)
     {
         if(! sliced[block].allocated)
         {
-            temp = temp + block_size;
+            available += block_size;
         }
     }
-    return temp;
+    return available;
 }
 
 inline void Heap::Deallocate(void* deleted)
 {
-    if (nullptr == deleted) return;
+    if ((nullptr == deleted) \
+        || (deleted < sliced[0].storage) \
+        || (deleted > sliced[block_count-1].storage+block_size) ) return;
     for(size_t block=0; block < block_count; block++)
     {
         if( sliced[block].storage == static_cast<uint8_t*>(deleted))
