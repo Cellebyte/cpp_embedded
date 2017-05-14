@@ -3,7 +3,7 @@
  */
 #ifndef POOLALLOCATOR_H
 #define POOLALLOCATOR_H
-#define CREATE(varName, blockCount, blockSize) Pool<blockCount, blockSize> varName;
+#define CREATEPOOL(varName, blockCount, blockSize) Pool<blockCount, blockSize> varName;
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>

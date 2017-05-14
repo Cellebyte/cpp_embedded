@@ -3,7 +3,7 @@
  */
 #ifndef PREALLOCSTRING_H
 #define PREALLOCSTRING_H
-#define CREATE(varName,size) PreAllocString<size> varName;
+#define CREATESTRING(varName,size) PreAllocString<size> varName;
 /*#define DISALLOW_COPY(class_name) \
 class_name(const class_name&); \
 class_name& operator =(const class_name&);
@@ -44,7 +44,7 @@ class PreAllocString
         /*  Current number of characters in string */
         size_t GetLength() const
         {
-            return used_length;
+            return used_length+1;
         }
 
         /*  Maximum number of characters possible */
