@@ -33,6 +33,7 @@ bool ClientServer::Start( Mode mode , unsigned int port , const char* ip )
         host_addr.sin_port = htons(port);
         if (inet_pton(AF_INET, ip, &(host_addr.sin_addr)) < 0)
         {
+            printf("No valid Address: %s\nUsing 0.0.0.0\n",ip);
             host_addr.sin_addr.s_addr = htonl(INADDR_ANY);
         }
 
