@@ -30,6 +30,7 @@ bool CmdLineOptParser::Parse(int argc, char* argv[])
     {
         //parse if an option exist and store this option in an temporary variable
         argument = argv[i];
+        if(nullptr == argument) return false;
         if(FLAG != argument[0]) return false;
         if(END_OF_STRING == argument[1]) return false;
         option = argument[1];
