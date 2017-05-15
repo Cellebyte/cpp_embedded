@@ -2,17 +2,19 @@
  *  @author Marcel Fest
  */
 #include "Communication.h"
-#define BUFSIZE 2048
-CREATEPOOL(pool_2048,10,2048);
+#define BUFSIZE 1500
+CREATEPOOL(packet_pool,10,BUFSIZE);
 bool ClientServer::Start( Mode mode , unsigned int port , const char* ip )
 {
-    if(mode == Server)
+    if ( !port || nullptr == ip || ! mode)return false;
+
+    if(mode == ClientServer::Mode::Server)
     {
 
         int service_socket;              /* listening socket providing service */
-        socklen_t address_length;        /* length of address structure */
         struct sockaddr_in host_addr;    /* address of this service */
         struct sockaddr_in client_addr;  /* client's address */
+        socklen_t address_length = sizeof(client_addr);       /* length of address structure */
         int message_length = 0;
 
         if ((service_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
@@ -38,41 +40,46 @@ bool ClientServer::Start( Mode mode , unsigned int port , const char* ip )
         {
             return false;
         }
-        printf("server started on %s, listening on port %d\n",inet_address, port);
+        printf("server started on %s, listening on port %u\n",inet_address, port);
         for (;;)
         {
             //#DEBUG printf("waiting on port %d\n", PORT);
-            void* buf = pool_2048.Allocate(2000);
-            message_length = recvfrom(host_addr, buf, BUFSIZE, 0, (struct sockaddr_in *)&client_addr, &address_length);
+            void* buf = packet_pool.Allocate(1500);
+            message_length = recvfrom(service_socket, buf, BUFSIZE, 0, (sockaddr *)&client_addr, &address_length);
             printf("received %d bytes\n", message_length);
-            if (message_length < 63)
+            if (message_length < 6)
             {
                 printf("Message to short.\n");
             }
         }
             /* never exits */
     }else
-    if(mode == Client)
+    if(mode == ClientServer::Mode::Client)
     {
-        struct sockaddr_in server_address;
+        struct sockaddr_in myaddr;
+        struct sockaddr_in remaddr;
+        int udp_socket = 0;
         if ((udp_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
         //AF_INET = IPv4, SOCK_DGRAM = Datagram Socket, Protocol_Type = 0
         {
             return false;
         }
-        memset((char*)&server_address,0, sizeof(server_address));
-        server_address.sin_family = AF_INET;
-        inet_pton(AF_INET, ip, &(server_address.sin_addr));
-        server_address.sin_port = htons(port);
-        if (bind(udp_socket, (struct sockaddr*)&server_address, sizeof(server_address)) < 0)
+        memset((char *)&myaddr, 0, sizeof(myaddr));
+    	myaddr.sin_family = AF_INET;
+    	myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    	myaddr.sin_port = htons(0);
+
+        memset((char *) &remaddr, 0, sizeof(remaddr));
+        remaddr.sin_family = AF_INET;
+        remaddr.sin_port = htons(port);
+
+        if (bind(udp_socket, (sockaddr *)&myaddr, sizeof(myaddr)) < 0)
         {
+            perror("bind failed");
             return false;
         }
-        CREATESTRING(string_store, 20);
-        string_store = "abcdef";
-        if (sendto(fd, string_store, string_store.GetLength, 0, (struct sockaddr *)&server_address, sizeof(server_address)) < 0)
-        {
-            return false;
-        }
+        char string_store [] = "abcdef";
+        if (sendto(udp_socket, string_store, 7, 0, (sockaddr *)&remaddr, sizeof(remaddr)) < 0) return false;
     }else return false;
+    return true;
 }
