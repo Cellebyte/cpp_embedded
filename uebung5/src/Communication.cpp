@@ -61,6 +61,7 @@ bool ClientServer::Start( Mode mode , unsigned int port , const char* ip )
             {
                 printf("Message to short.\n");
             }
+            packet_pool.Deallocate(buf);
         }
             /* never exits --> check on keyboard interrupt*/
     }else
