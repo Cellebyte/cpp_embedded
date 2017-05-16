@@ -3,7 +3,6 @@
  */
 #ifndef POOLALLOCATOR_H
 #define POOLALLOCATOR_H
-#define CREATEPOOL(varName, blockCount, blockSize) Pool<blockCount, blockSize> varName;
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -61,13 +60,13 @@ class Heap: public IHeap
 };
 
 template <size_t blockCount, size_t blockSize>
-class Pool: public Heap
+class PoolAllocator: public Heap
 {
     private:
         Block sliced [blockCount];
         uint8_t storage [blockSize*blockCount] = {0};
     public:
-        Pool() : Heap(sliced, blockCount, blockSize) {
+        PoolAllocator() : Heap(sliced, blockCount, blockSize) {
             for(size_t block = 0; block < blockCount; block++)
             {
                 sliced[block].storage = storage+(block*blockSize);

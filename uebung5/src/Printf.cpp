@@ -3,6 +3,7 @@
  *
  *  include stdarg.h from c++ for variable parameters
  */
+
 #include "Printf.h"
 
 #define END_OF_STRING       '\0'
@@ -39,10 +40,10 @@ static const char digits[] = "0123456789abcdef";
  *  @return substituted Format String
  */
 
-char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
+char* Printf( char* dst, const void* end, const char* fmt, ... )
 {
     //Nullpointer Check
-    if(!dst || !end || !fmt || !vl)return END_OF_STRING;
+    if(!dst || !end || !fmt)return END_OF_STRING;
 
     /*
      *  1.  %d for signed int
@@ -61,6 +62,8 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
     int NULLING(value);         //   value for 1.
     char* iter = dst;             // define an iterator over the array
 
+    va_list vl;                 // variable arg list initialization
+    va_start(vl, fmt);          // define variable params after fmt
     while(END_OF_STRING != *fmt && iter < end)
     {
         temp = *fmt;
@@ -185,6 +188,7 @@ char* Printf( char* dst, const void* end, const char* fmt, va_list vl )
         }
         fmt++;      //   --> next character
     }
+    va_end(vl);
     *iter = END_OF_STRING;     //  append end of String
     return iter;     //  return the created String
 }
@@ -203,7 +207,6 @@ char* unsigned_int_to_number_system_string(char* buffer,unsigned int value, int 
         return buffer;
     }
 }
-
 bool is_end(char* iter, const void* end)
 {
     if(iter==end)

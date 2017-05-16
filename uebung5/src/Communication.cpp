@@ -1,9 +1,14 @@
-/*
- *  @author Marcel Fest
- */
-#include "Communication_real.h"
-bool ClientServer::Start( Mode mode , unsigned int port , const char* ip)
-{
-    ClientServer_Real client_server;
-    return client_server.Start(static_cast<ClientServer_Real::Mode>(mode),port,ip);
+#include "Communication.h"
+#include "ClientServerReal.h"
+
+bool ClientServer::Start(Mode mode, unsigned int port, const char * ip) {
+  if (Mode::Client == mode) {
+    ClientServerReal csr;
+    return csr.Start(ClientServerReal::Mode::Client, port, ip);
+  } else if (Mode::Server == mode) {
+    ClientServerReal csr;
+    return csr.Start(ClientServerReal::Mode::Server, port, ip);
+  } else {
+    return false;
+  }
 }

@@ -1,21 +1,14 @@
-/*
- *  @author Marcel Fest
- */
-
 #ifndef COMMUNICATION_H
 #define COMMUNICATION_H
 
-class ClientServer
-{
+class ClientServer {
+ public:
+    enum Mode : unsigned int {
+      Server,
+      Client
+    };
 
-    public:
-        enum Mode : unsigned int
-        {
-            Server,
-            Client
-        };
-        bool Start (Mode mode , unsigned int port , const char* ip );
+    bool Start(Mode mode, unsigned int port, const char * ip);
 };
 
-
-#endif
+#endif /* COMMUNICATION_H */
